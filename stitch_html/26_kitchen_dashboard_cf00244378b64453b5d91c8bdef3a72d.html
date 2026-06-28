@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine Kitchen Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-dim": "#d0dbed",
+                "inverse-on-surface": "#eaf1ff",
+                "inverse-primary": "#ffb59d",
+                "on-secondary-fixed-variant": "#005320",
+                "surface": "#f8f9ff",
+                "surface-container-highest": "#d9e3f6",
+                "surface-container-high": "#dee9fc",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#27313f",
+                "on-error-container": "#93000a",
+                "outline": "#8d7168",
+                "surface-container-low": "#eff4ff",
+                "surface-tint": "#ab3500",
+                "surface-container": "#e6eeff",
+                "on-tertiary": "#ffffff",
+                "tertiary": "#00677e",
+                "on-error": "#ffffff",
+                "on-secondary-container": "#007230",
+                "on-primary-fixed-variant": "#832600",
+                "secondary-fixed-dim": "#62df7d",
+                "primary-container": "#ff6b35",
+                "primary": "#ab3500",
+                "error": "#ba1a1a",
+                "primary-fixed": "#ffdbd0",
+                "on-tertiary-fixed": "#001f28",
+                "on-primary-container": "#5f1900",
+                "tertiary-container": "#00a7cb",
+                "outline-variant": "#e1bfb5",
+                "background": "#f8f9ff",
+                "on-surface-variant": "#594139",
+                "on-background": "#121c2a",
+                "surface-variant": "#d9e3f6",
+                "primary-fixed-dim": "#ffb59d",
+                "secondary": "#006e2d",
+                "surface-bright": "#f8f9ff",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed": "#002109",
+                "on-primary-fixed": "#390c00",
+                "on-tertiary-fixed-variant": "#004e60",
+                "tertiary-fixed-dim": "#59d5fb",
+                "on-tertiary-container": "#003744",
+                "on-surface": "#121c2a",
+                "error-container": "#ffdad6",
+                "secondary-fixed": "#7ffc97",
+                "tertiary-fixed": "#b5ebff",
+                "secondary-container": "#7cf994",
+                "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "md": "16px",
+                "gutter": "12px",
+                "lg": "24px",
+                "xs": "4px",
+                "base": "4px",
+                "container-padding": "16px",
+                "sm": "8px",
+                "xl": "32px"
+              },
+              "fontFamily": {
+                "headline-xl": ["Inter"],
+                "body-md": ["Inter"],
+                "title-md": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "label-sm": ["Inter"],
+                "headline-lg": ["Inter"],
+                "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .kanban-column {
+            height: calc(100vh - 120px);
+            scrollbar-width: none;
+        }
+        .kanban-column::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-effect {
+            backdrop-filter: blur(8px);
+            background: rgba(39, 49, 63, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-on-background text-on-surface selection:bg-primary selection:text-white font-body-md overflow-hidden">
+<!-- Navigation Drawer (SideNav) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-inverse-surface border-r border-outline-variant flex flex-col py-lg z-50">
+<div class="px-md mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-primary font-bold">LuxeDine</h1>
+<div class="mt-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold">
+                    SA
+                </div>
+<div>
+<p class="text-on-surface-variant font-bold">Store Admin</p>
+<p class="text-label-sm text-outline-variant">Main Branch</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Inventory</span>
+</a>
+<a class="flex items-center gap-md bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2 cursor-pointer" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+<span>Live Orders</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<div class="p-md bg-surface-container-high rounded-xl flex items-center justify-between">
+<div>
+<p class="text-label-sm text-on-surface-variant">Kitchen Status</p>
+<p class="text-secondary font-bold">ONLINE</p>
+</div>
+<div class="w-3 h-3 rounded-full bg-secondary animate-pulse"></div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 p-lg h-screen overflow-hidden">
+<!-- Header -->
+<header class="flex justify-between items-center mb-xl">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-white">Kitchen Dashboard</h2>
+<p class="text-on-surface-variant">Managing 24 active orders across 12 tables</p>
+</div>
+<div class="flex gap-md">
+<button class="bg-surface-container-high text-on-surface p-md rounded-xl flex items-center gap-sm hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">refresh</span>
+<span>Sync</span>
+</button>
+<div class="bg-primary-container text-on-primary-container px-lg py-md rounded-xl font-bold flex items-center gap-sm shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span>Avg. Prep Time: 12m</span>
+</div>
+</div>
+</header>
+<!-- Kanban Board -->
+<div class="grid grid-cols-3 gap-lg h-full">
+<!-- Column: New Orders -->
+<div class="flex flex-col gap-md">
+<div class="flex items-center justify-between px-xs">
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<h3 class="font-title-md text-title-md text-white">New Orders</h3>
+</div>
+<span class="bg-surface-container-high text-on-surface px-sm py-1 rounded-full text-label-sm">8</span>
+</div>
+<div class="kanban-column overflow-y-auto space-y-md pb-xl">
+<!-- Order Card 1 (Requested Content) -->
+<div class="bg-inverse-surface rounded-xl p-md border border-outline/20 shadow-lg hover:border-primary/50 transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="bg-error/10 text-error px-sm py-1 rounded-full text-label-sm font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+                                    High
+                                </span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white mt-sm">Table 12</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8821</p>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold">7 mins ago</p>
+<span class="text-label-sm text-on-surface-variant">Dine-in</span>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between items-center">
+<span class="text-white">1x Wagyu Truffle Burger</span>
+<span class="text-on-surface-variant text-label-sm">Medium Rare</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-white">1x Lobster Thermidor</span>
+<span class="text-on-surface-variant text-label-sm">Extra Butter</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-white">1x Truffle Fries</span>
+<span class="text-on-surface-variant text-label-sm">No Salt</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-md rounded-lg font-bold hover:opacity-90 transition-opacity">
+                            Start Preparing
+                        </button>
+</div>
+<!-- Order Card 2 -->
+<div class="bg-inverse-surface rounded-xl p-md border border-outline/20 shadow-sm opacity-90">
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="bg-secondary/10 text-secondary px-sm py-1 rounded-full text-label-sm font-bold">Normal</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white mt-sm">Table 04</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8822</p>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant font-bold">3 mins ago</p>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between items-center">
+<span class="text-white">2x Caesar Salad</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-white">1x Ribeye Steak</span>
+</div>
+</div>
+<button class="w-full bg-surface-container-high text-on-surface py-md rounded-lg font-bold">
+                            Start Preparing
+                        </button>
+</div>
+</div>
+</div>
+<!-- Column: Preparing -->
+<div class="flex flex-col gap-md">
+<div class="flex items-center justify-between px-xs">
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<h3 class="font-title-md text-title-md text-white">Preparing</h3>
+</div>
+<span class="bg-surface-container-high text-on-surface px-sm py-1 rounded-full text-label-sm">12</span>
+</div>
+<div class="kanban-column overflow-y-auto space-y-md pb-xl">
+<!-- Preparing Card 1 -->
+<div class="bg-inverse-surface rounded-xl p-md border-l-4 border-primary-container shadow-lg relative overflow-hidden">
+<!-- Progress Overlay Simulation -->
+<div class="absolute top-0 left-0 h-1 bg-primary-container/30 w-full">
+<div class="h-full bg-primary-container animate-[width_10s_ease-in-out_infinite]" style="width: 65%;"></div>
+</div>
+<div class="flex justify-between items-start mb-md pt-xs">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white">Table 08</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8815</p>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-xs text-primary-container font-bold">
+<span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+<span>08:45</span>
+</div>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between items-center">
+<span class="text-white">1x Duck Confit</span>
+<span class="bg-secondary/20 text-secondary text-[10px] px-1.5 rounded">READY</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-white">1x Scallop Risotto</span>
+<span class="bg-primary-container/20 text-primary-container text-[10px] px-1.5 rounded animate-pulse">COOKING</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 bg-surface-container-highest text-on-surface py-sm rounded-lg text-label-sm font-bold">Hold</button>
+<button class="flex-1 bg-secondary text-white py-sm rounded-lg text-label-sm font-bold">Mark Ready</button>
+</div>
+</div>
+<!-- Preparing Card 2 -->
+<div class="bg-inverse-surface rounded-xl p-md border-l-4 border-primary-container/50 shadow-sm opacity-80">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white">Table 21</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8819</p>
+</div>
+<div class="text-right font-bold text-on-surface-variant">04:12</div>
+</div>
+<div class="space-y-sm mb-lg">
+<span class="text-white">4x Signature Cocktails</span>
+</div>
+<button class="w-full bg-secondary text-white py-sm rounded-lg text-label-sm font-bold">Mark Ready</button>
+</div>
+</div>
+</div>
+<!-- Column: Ready -->
+<div class="flex flex-col gap-md">
+<div class="flex items-center justify-between px-xs">
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<h3 class="font-title-md text-title-md text-white">Ready</h3>
+</div>
+<span class="bg-surface-container-high text-on-surface px-sm py-1 rounded-full text-label-sm">4</span>
+</div>
+<div class="kanban-column overflow-y-auto space-y-md pb-xl">
+<!-- Ready Card 1 -->
+<div class="bg-secondary/5 border border-secondary/30 rounded-xl p-md shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white">Table 01</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8810</p>
+</div>
+<div class="text-right">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center mb-lg">
+<span class="text-white">Full Course Dinner (6 items)</span>
+<span class="text-on-surface-variant text-label-sm">Waiting for Server</span>
+</div>
+<button class="w-full border border-secondary text-secondary py-md rounded-lg font-bold hover:bg-secondary hover:text-white transition-all">
+                            Notify Server Again
+                        </button>
+</div>
+<!-- Ready Card 2 -->
+<div class="bg-secondary/5 border border-secondary/30 rounded-xl p-md shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white">Table 15</h4>
+<p class="text-label-sm text-on-surface-variant">Order #LD-8808</p>
+</div>
+</div>
+<div class="flex justify-between items-center mb-lg">
+<span class="text-white">Dessert Sampler</span>
+</div>
+<button class="w-full border border-secondary text-secondary py-md rounded-lg font-bold">
+                            Notify Server
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Global FAB Suppression as per mandate: No FAB on Dashboard/Kitchen unless specific action needed.
+         Adding a subtle background shader for atmospheric kitchen heat/vapor feel -->
+<div class="fixed inset-0 -z-10 pointer-events-none opacity-20">
+
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple drag feedback simulation
+        document.querySelectorAll('.bg-inverse-surface').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.cursor = 'grabbing';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.cursor = 'grab';
+            });
+        });
+
+        // Dynamic Clock Update
+        function updateClock() {
+            const now = new Date();
+            // Could add a clock to the top bar if needed
+        }
+        setInterval(updateClock, 1000);
+    </script>
+</body></html>

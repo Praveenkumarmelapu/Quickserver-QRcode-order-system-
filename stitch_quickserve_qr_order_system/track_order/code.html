@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Tracking - LuxeDine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .step-active-pulse {
+      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-dim": "#d0dbed",
+                  "inverse-on-surface": "#eaf1ff",
+                  "inverse-primary": "#ffb59d",
+                  "on-secondary-fixed-variant": "#005320",
+                  "surface": "#f8f9ff",
+                  "surface-container-highest": "#d9e3f6",
+                  "surface-container-high": "#dee9fc",
+                  "on-secondary": "#ffffff",
+                  "inverse-surface": "#27313f",
+                  "on-error-container": "#93000a",
+                  "outline": "#8d7168",
+                  "surface-container-low": "#eff4ff",
+                  "surface-tint": "#ab3500",
+                  "surface-container": "#e6eeff",
+                  "on-tertiary": "#ffffff",
+                  "tertiary": "#00677e",
+                  "on-error": "#ffffff",
+                  "on-secondary-container": "#007230",
+                  "on-primary-fixed-variant": "#832600",
+                  "secondary-fixed-dim": "#62df7d",
+                  "primary-container": "#ff6b35",
+                  "primary": "#ab3500",
+                  "error": "#ba1a1a",
+                  "primary-fixed": "#ffdbd0",
+                  "on-tertiary-fixed": "#001f28",
+                  "on-primary-container": "#5f1900",
+                  "tertiary-container": "#00a7cb",
+                  "outline-variant": "#e1bfb5",
+                  "background": "#f8f9ff",
+                  "on-surface-variant": "#594139",
+                  "on-background": "#121c2a",
+                  "surface-variant": "#d9e3f6",
+                  "primary-fixed-dim": "#ffb59d",
+                  "secondary": "#006e2d",
+                  "surface-bright": "#f8f9ff",
+                  "surface-container-lowest": "#ffffff",
+                  "on-secondary-fixed": "#002109",
+                  "on-primary-fixed": "#390c00",
+                  "on-tertiary-fixed-variant": "#004e60",
+                  "tertiary-fixed-dim": "#59d5fb",
+                  "on-tertiary-container": "#003744",
+                  "on-surface": "#121c2a",
+                  "error-container": "#ffdad6",
+                  "secondary-fixed": "#7ffc97",
+                  "tertiary-fixed": "#b5ebff",
+                  "secondary-container": "#7cf994",
+                  "on-primary": "#ffffff"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "md": "16px",
+                  "gutter": "12px",
+                  "lg": "24px",
+                  "xs": "4px",
+                  "base": "4px",
+                  "container-padding": "16px",
+                  "sm": "8px",
+                  "xl": "32px"
+          },
+          "fontFamily": {
+                  "headline-xl": ["Inter"],
+                  "body-md": ["Inter"],
+                  "title-md": ["Inter"],
+                  "headline-lg-mobile": ["Inter"],
+                  "label-sm": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "body-lg": ["Inter"]
+          },
+          "fontSize": {
+                  "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                  "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                  "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                  "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm flex justify-between items-center px-container-padding h-16 w-full">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional restaurant logo for LuxeDine, featuring a minimalist gold cloche emblem on a warm orange background. The design is sleek, modern, and conveys high-end culinary excellence. The lighting is soft and luxurious, fitting a premium minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh3Herb7AVySCIZkohbXYUr6Vk586gAElGl0w6WuyWmcl5YVIXJZbs0mVCh6HvU8BBLXNzeIzUawpSaBbJrzs0AAXO-ZO3fhGg_yQVmO2Ynwl1-FQ43tm6j5fUPfh5Cm5JnWvk55tH_RIOxywld6HwM1Ixcvkj-X1HPfeLT4Psg7l506aQvcffonUP_oSHV5d4oYNMjCE26Wt64EjfnOYkizCR0BFo0lHGJGe6dTWfwPCt4sVeyZky0eIlG7lMRk-hXM1a6d5fJj0"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">LuxeDine</h1>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95 duration-150">
+      notifications
+    </button>
+</header>
+<main class="pt-20 px-container-padding max-w-2xl mx-auto">
+<!-- Status Header -->
+<section class="mb-lg">
+<div class="flex items-center justify-between mb-xs">
+<h2 class="font-title-md text-title-md text-on-surface">Order #LD-8821</h2>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+          Preparing
+        </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Estimated arrival in <span class="text-primary font-bold">12-15 mins</span></p>
+</section>
+<!-- Tracking Timeline (Bento Style Card) -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm mb-lg border border-outline-variant/30">
+<div class="flex flex-col gap-6 relative">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-4 bottom-4 w-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 w-full bg-primary" style="height: 55%;"></div>
+</div>
+<!-- Step: Pending -->
+<div class="flex items-start gap-md">
+<div class="z-10 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<h3 class="font-title-md text-body-lg font-bold text-on-surface">Order Pending</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Received at 12:45 PM</p>
+</div>
+</div>
+<!-- Step: Accepted -->
+<div class="flex items-start gap-md">
+<div class="z-10 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<h3 class="font-title-md text-body-lg font-bold text-on-surface">Accepted</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Confirmed by Chef at 12:47 PM</p>
+</div>
+</div>
+<!-- Step: Preparing (ACTIVE) -->
+<div class="flex items-start gap-md">
+<div class="z-10 w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container step-active-pulse border-4 border-white shadow-md">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="flex-1">
+<h3 class="font-title-md text-body-lg font-bold text-primary">Preparing</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Your meal is being crafted with care</p>
+<div class="mt-sm h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container shimmer" style="width: 65%;"></div>
+</div>
+</div>
+</div>
+<!-- Step: Ready -->
+<div class="flex items-start gap-md opacity-50">
+<div class="z-10 w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</div>
+<div class="flex-1">
+<h3 class="font-title-md text-body-lg font-bold text-on-surface">Ready for Pickup</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Awaiting server dispatch</p>
+</div>
+</div>
+<!-- Step: Served -->
+<div class="flex items-start gap-md opacity-50">
+<div class="z-10 w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">flatware</span>
+</div>
+<div class="flex-1">
+<h3 class="font-title-md text-body-lg font-bold text-on-surface">Served</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Enjoy your LuxeDine experience</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Status Update -->
+<div class="flex items-center justify-center gap-2 mb-lg">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] animate-spin">sync</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Updates every minute</span>
+</div>
+<!-- Order Summary Card -->
+<section class="mb-xl">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-md">Order Summary</h2>
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-sm">
+<div class="p-md border-b border-outline-variant/30 flex gap-md">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up, high-end food photograph of a Wagyu Beef Burger with truffle aioli and caramelized onions. The lighting is cinematic and warm, highlighting the textures of the brioche bun and melted cheese. The background is a soft-focus minimalist restaurant interior with elegant wooden accents and warm ambient light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2-rViNp8Y-IllIjFrSyhCeTubKBQ2o7wHU8zISEdoHUuCjTxOGIhiA0Mak2cJ2_oPSAOoaGGPkn9eGY4BJ8sLr7yOxEOda7oFTVTIVs1_aW37rAIjOZP7kHe5OXHnXxSklzpXLcRY1rnLRwUZ_nV2MZybX-Oi_jMBAxXepbkj8GbHN_2iep1UT8TFy2pUePbBvF0IW9O_un_WYUp24AQvIzX_yI9m6443Hs02XoeJP5KZ6xayK7j1jeUVIytF5EYp534RRe9ogkc"/>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="font-title-md text-body-lg text-on-surface">Truffle Wagyu Burger</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Medium Rare • No Onions</p>
+<p class="font-title-md text-primary mt-1">$28.00</p>
+</div>
+</div>
+<div class="p-md border-b border-outline-variant/30 flex gap-md">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A gourmet appetizer featuring hand-cut Truffle Fries dusted with parmesan and fresh herbs. The presentation is elegant in a ceramic bowl. The lighting is bright and appetizing, emphasizing the golden crispy texture. Minimalist aesthetic with clean white surfaces and high-frequency dining vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSGB3KjWolUuILf1xWA1x6d42A5E7HjwFAfe8EZ5DMg_rVr3cEPBR0MRO4eGgIytEaqcJ13rhAazUi_CZ1NH9pkktI81y6MzuzbnSR5yjot_0Y1dVfzFswAq4iEocMJmO9pB_u5aQhg3a6DIWiY1aH7wOQ5v3b5X7qe0ZHApMzFkqovhXuiNQQEOzTIjYXLK6sGxUxFenguUp40tqpP8KSCbjF1ZsBIlxq6NS9tMiv12DgtFRXJAxbGGyNwF9tbBCY5DyqRan6LAU"/>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="font-title-md text-body-lg text-on-surface">Parmesan Truffle Fries</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Signature Side</p>
+<p class="font-title-md text-primary mt-1">$12.00</p>
+</div>
+</div>
+<!-- Totals -->
+<div class="p-md bg-surface-container-high/50">
+<div class="flex justify-between mb-1">
+<span class="font-body-md text-on-surface-variant">Subtotal</span>
+<span class="font-body-md text-on-surface">$40.00</span>
+</div>
+<div class="flex justify-between mb-1">
+<span class="font-body-md text-on-surface-variant">Service Fee (10%)</span>
+<span class="font-body-md text-on-surface">$4.00</span>
+</div>
+<div class="flex justify-between mt-sm pt-sm border-t border-outline-variant">
+<span class="font-title-md text-on-surface">Total</span>
+<span class="font-headline-lg-mobile text-primary">$44.00</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Support Action -->
+<button class="w-full py-4 bg-surface-container-highest rounded-xl text-on-surface font-title-md flex items-center justify-center gap-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined">support_agent</span>
+      Contact Support
+    </button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-2 bg-surface-container dark:bg-inverse-surface shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-sm text-label-sm">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</nav>
+<script>
+    // Micro-interaction for the "Help" or "Contact Support" buttons
+    document.querySelectorAll('button, a').forEach(elem => {
+      elem.addEventListener('click', (e) => {
+        // Simple feedback for demo
+        console.log('Action triggered:', elem.innerText.trim());
+      });
+    });
+
+    // Simulated minute update text change
+    let secondsLeft = 60;
+    const updateText = document.querySelector('.animate-spin').parentElement.querySelector('span:last-child');
+    setInterval(() => {
+      secondsLeft--;
+      if(secondsLeft <= 0) secondsLeft = 60;
+      // No visual change to text to keep string integrity, but logic placeholder
+    }, 1000);
+  </script>
+</body></html>

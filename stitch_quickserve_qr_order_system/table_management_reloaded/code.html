@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine | Table &amp; QR Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .status-pulse {
+            position: relative;
+        }
+        .status-pulse::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.4; transform: translateY(-50%) scale(1.2); }
+            100% { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#d0dbed",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#ffb59d",
+                      "on-secondary-fixed-variant": "#005320",
+                      "surface": "#f8f9ff",
+                      "surface-container-highest": "#d9e3f6",
+                      "surface-container-high": "#dee9fc",
+                      "on-secondary": "#ffffff",
+                      "inverse-surface": "#27313f",
+                      "on-error-container": "#93000a",
+                      "outline": "#8d7168",
+                      "surface-container-low": "#eff4ff",
+                      "surface-tint": "#ab3500",
+                      "surface-container": "#e6eeff",
+                      "on-tertiary": "#ffffff",
+                      "tertiary": "#00677e",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#007230",
+                      "on-primary-fixed-variant": "#832600",
+                      "secondary-fixed-dim": "#62df7d",
+                      "primary-container": "#ff6b35",
+                      "primary": "#ab3500",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#ffdbd0",
+                      "on-tertiary-fixed": "#001f28",
+                      "on-primary-container": "#5f1900",
+                      "tertiary-container": "#00a7cb",
+                      "outline-variant": "#e1bfb5",
+                      "background": "#f8f9ff",
+                      "on-surface-variant": "#594139",
+                      "on-background": "#121c2a",
+                      "surface-variant": "#d9e3f6",
+                      "primary-fixed-dim": "#ffb59d",
+                      "secondary": "#006e2d",
+                      "surface-bright": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#002109",
+                      "on-primary-fixed": "#390c00",
+                      "on-tertiary-fixed-variant": "#004e60",
+                      "tertiary-fixed-dim": "#59d5fb",
+                      "on-tertiary-container": "#003744",
+                      "on-surface": "#121c2a",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#7ffc97",
+                      "tertiary-fixed": "#b5ebff",
+                      "secondary-container": "#7cf994",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "gutter": "12px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "container-padding": "16px",
+                      "sm": "8px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm flex justify-between items-center px-container-padding h-16 w-full">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A sophisticated minimalist restaurant logo featuring stylized abstract cutlery in deep orange, set against a pristine white circle. The aesthetic is clean, modern, and high-end, fitting for a premium dining brand. Lighting is soft and even, highlighting the vibrant primary orange brand color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwRMWpxddjABhEiP22gYkGhuUbx8aleBIyQF7eWZ8iZCxpEUbzz3DvaLvTFuHz0hRcypPCQWnbKThZal2hzGhG2iHGJXs31TTl_5591NgHYQf_3sNeZFgGM_J-X27iOXYVbJ-_Znieeq076xrN15jPnRq6H9emOpK7CkCP2OPGj8SiA7dhAmmye9qpDsKS3sCpH44exxphG3I6YEl_niJFYY4sz3TVFbS3xnsVOLebYSEAu6DE274_-CtoAE87WoWVvRj-na9x0mc"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">LuxeDine</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95 duration-150">notifications</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant"></div>
+</div>
+</header>
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant py-lg z-40">
+<div class="px-md mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary font-bold">LuxeDine</h2>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-body-md text-body-md">Live Orders</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="font-body-md text-body-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-lg">
+<div class="flex items-center gap-sm p-2 rounded-xl bg-surface-bright border border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-label-sm text-label-sm font-bold">Store Admin</p>
+<p class="text-[10px] text-on-surface-variant">Main Branch</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="pt-20 pb-24 md:pl-64 px-container-padding min-h-screen">
+<header class="flex justify-between items-center mb-lg">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Table Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage layout, QR codes, and real-time status.</p>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-xl font-title-md flex items-center gap-sm shadow-md hover:opacity-90 transition-opacity active:scale-95">
+<span class="material-symbols-outlined">add</span>
+                Add Table
+            </button>
+</header>
+<!-- Stats Overview -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-xl">
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-xs">
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase">Total Tables</span>
+<span class="text-headline-lg text-headline-lg font-bold">24</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-xs">
+<span class="text-on-secondary-container font-label-sm text-label-sm uppercase">Available</span>
+<span class="text-headline-lg text-headline-lg font-bold text-secondary">16</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-xs">
+<span class="text-on-primary-container font-label-sm text-label-sm uppercase">Occupied</span>
+<span class="text-headline-lg text-headline-lg font-bold text-primary">8</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-xs">
+<span class="text-tertiary font-label-sm text-label-sm uppercase">QR Scans Today</span>
+<span class="text-headline-lg text-headline-lg font-bold">142</span>
+</div>
+</div>
+<!-- Tables Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
+<!-- Table Card Template (Repeated via JS for code brevity as in source) -->
+<script>
+                const tableData = [
+                    { id: '01', seating: 2, status: 'Available', color: 'text-secondary' },
+                    { id: '02', seating: 4, status: 'Occupied', color: 'text-primary' },
+                    { id: '03', seating: 4, status: 'Available', color: 'text-secondary' },
+                    { id: '04', seating: 6, status: 'Occupied', color: 'text-primary' },
+                    { id: '05', seating: 2, status: 'Reserved', color: 'text-tertiary' },
+                    { id: '06', seating: 4, status: 'Available', color: 'text-secondary' },
+                    { id: '07', seating: 4, status: 'Occupied', color: 'text-primary' },
+                    { id: '08', seating: 8, status: 'Available', color: 'text-secondary' },
+                    { id: '09', seating: 2, status: 'Occupied', color: 'text-primary' },
+                    { id: '10', seating: 4, status: 'Available', color: 'text-secondary' },
+                    { id: '11', seating: 2, status: 'Reserved', color: 'text-tertiary' },
+                    { id: '12', seating: 4, status: 'Occupied', color: 'text-primary' },
+                ];
+
+                document.write(tableData.map(table => `
+                    <div class="glass-card p-md rounded-2xl flex flex-col gap-md transition-all hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex justify-between items-start">
+                            <div class="flex flex-col">
+                                <h3 class="font-headline-lg text-headline-lg text-on-surface">Table #${table.id}</h3>
+                                <p class="font-body-md text-body-md text-on-surface-variant">Seating: ${table.seating}</p>
+                            </div>
+                            <span class="font-label-sm text-label-sm uppercase font-bold ${table.color} status-pulse pr-4">${table.status}</span>
+                        </div>
+                        
+                        <div class="bg-surface-container-high rounded-xl p-sm flex items-center justify-center h-32 relative overflow-hidden">
+                            <div class="w-24 h-24 bg-white p-2 rounded-lg shadow-sm">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=LuxeDineTable${table.id}" data-alt="A clean, high-resolution QR code rendered in a minimalist graphic style. The QR code is perfectly centered and sharp, set against a crisp white background. The surrounding environment is a modern, light-filled restaurant management interface with subtle orange accents, maintaining the premium LuxeDine aesthetic." class="w-full h-full">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-sm">
+                            <button class="flex items-center justify-center gap-xs border border-outline-variant py-2 rounded-xl text-on-surface-variant font-label-sm hover:bg-surface-container-high transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">print</span>
+                                Print QR
+                            </button>
+                            <button class="flex items-center justify-center gap-xs border border-outline-variant py-2 rounded-xl text-on-surface-variant font-label-sm hover:bg-surface-container-high transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                `).join(''));
+            </script>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-2 bg-surface-container dark:bg-inverse-surface rounded-t-xl border-t border-outline-variant shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-sm text-label-sm">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.95)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

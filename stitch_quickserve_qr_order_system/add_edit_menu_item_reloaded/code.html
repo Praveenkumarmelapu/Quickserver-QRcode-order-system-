@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine - Edit Menu Item</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35 !important;
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d0dbed",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#ffb59d",
+                        "on-secondary-fixed-variant": "#005320",
+                        "surface": "#f8f9ff",
+                        "surface-container-highest": "#d9e3f6",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#27313f",
+                        "on-error-container": "#93000a",
+                        "outline": "#8d7168",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#ab3500",
+                        "surface-container": "#e6eeff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#00677e",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#007230",
+                        "on-primary-fixed-variant": "#832600",
+                        "secondary-fixed-dim": "#62df7d",
+                        "primary-container": "#ff6b35",
+                        "primary": "#ab3500",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-primary-container": "#5f1900",
+                        "tertiary-container": "#00a7cb",
+                        "outline-variant": "#e1bfb5",
+                        "background": "#f8f9ff",
+                        "on-surface-variant": "#594139",
+                        "on-background": "#121c2a",
+                        "surface-variant": "#d9e3f6",
+                        "primary-fixed-dim": "#ffb59d",
+                        "secondary": "#006e2d",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002109",
+                        "on-primary-fixed": "#390c00",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "on-tertiary-container": "#003744",
+                        "on-surface": "#121c2a",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#7ffc97",
+                        "tertiary-fixed": "#b5ebff",
+                        "secondary-container": "#7cf994",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "container-padding": "16px",
+                        "sm": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen pb-32">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface shadow-sm flex justify-between items-center px-container-padding h-16">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full transition-colors active:scale-95">arrow_back</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim font-bold">Edit Item</h1>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary p-2">notifications</span>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional circular avatar of a restaurant manager in a clean white culinary uniform, shot in a high-key studio setting with soft lighting. The background is a minimalist, slightly blurred high-end kitchen with stainless steel accents, maintaining a bright and premium light-mode aesthetic. The composition is clean and focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMXyqLvwUgWmJNJgdmMMhVcC13xVckR0WKBQFDEymMDZyHCJG95fRbCtnBrjmZO2V3cuHKDbbEMo0bgCeffX1lZ2tigMFAvCsqPetfYhlfCQy9B-1KROevvE4XhpjlM2_fgNrVyVsEAXRI_NuACCL_3fUplMmYzykbJDpv9OpLt53pYv3snJF-UtfC4o-O_lG1-SL5RlzmtEP0QXYxGwOH1zs7zqJDWB6Qf17OrSRRH4qtc8Gc4bqRrnhT6tXAfjD-kXdFITT7aCw"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-container-padding max-w-4xl mx-auto">
+<form class="grid grid-cols-1 md:grid-cols-12 gap-lg pb-12">
+<!-- Left Column: Image Upload Section -->
+<div class="md:col-span-4 flex flex-col gap-md">
+<label class="font-title-md text-on-surface-variant flex items-center gap-xs">
+                Item Image
+            </label>
+<div class="relative group cursor-pointer aspect-square rounded-xl overflow-hidden border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center transition-all hover:border-primary-container hover:bg-surface-container-high">
+<img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A gourmet close-up of a vibrant Mediterranean dish, perhaps a spiced lamb chop with pomegranate seeds and fresh mint, presented on a minimalist ceramic plate. The lighting is bright and natural, casting soft shadows to emphasize texture and freshness. The scene is set in a high-end, minimalist restaurant with a light-mode color palette of creams and subtle orange accents." id="image-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA7bQULjFiV2AgNV5tRjD_3rnNoqUP2k1EPhpHrhZj_aS2usNKgxYAh-kkCmLf7yMEAFKSxenE3iSxvNxiJztLS_rZugV70auolmd4TrJRQeZLM5T3ZIPhdVR50ldfRaPTpyOsCIdA5bb9NgC5s5Q8yLAn5mlcfv1dCDWdWjoU6xPs2tcSLgm6FZvtFDOs-ELDSCq2MI9qHhsnh-bUrMENtcZtw-f68RqDSIwXHtn_Mlz8fgBo53Ht8nmUWcFsK7woXh9kZVQEr-k"/>
+<div class="relative z-10 flex flex-col items-center text-center p-md">
+<span class="material-symbols-outlined text-4xl text-primary mb-sm">add_a_photo</span>
+<p class="text-label-sm text-on-surface-variant font-semibold">Change Photo</p>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant opacity-70 italic text-center">Recommended: 800x800px, PNG or JPG</p>
+</div>
+<!-- Right Column: Form Fields -->
+<div class="md:col-span-8 flex flex-col gap-lg">
+<!-- Main Info Card -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/30 flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Item Name</label>
+<input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 font-body-lg text-on-surface focus:ring-0" placeholder="e.g. Classic Margherita" type="text" value="Smoked Paprika Glazed Salmon"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Category</label>
+<select class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 font-body-md text-on-surface focus:ring-0 appearance-none cursor-pointer">
+<option>Appetizers</option>
+<option selected="">Main Course</option>
+<option>Desserts</option>
+<option>Beverages</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Price ($)</label>
+<input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 font-body-lg text-on-surface focus:ring-0" step="0.01" type="number" value="28.50"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Description</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 font-body-md text-on-surface focus:ring-0 resize-none" rows="4">Fresh Atlantic salmon fillets, slow-smoked with organic oak wood and glazed with a signature honey-paprika reduction. Served with seasonal roasted asparagus and lemon zest couscous.</textarea>
+</div>
+</div>
+<!-- Toggles Card -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/30 grid grid-cols-1 sm:grid-cols-2 gap-lg">
+<!-- Veg Toggle -->
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">eco</span>
+</div>
+<div>
+<p class="font-title-md text-on-surface">Vegetarian</p>
+<p class="text-xs text-on-surface-variant">Mark if green leaf</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Availability Toggle -->
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container">inventory_2</span>
+</div>
+<div>
+<p class="font-title-md text-on-surface">In Stock</p>
+<p class="text-xs text-on-surface-variant">Show on live menu</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<!-- Advanced Settings Bento Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container-low p-md rounded-xl flex flex-col gap-sm border border-outline-variant/20 hover:border-primary-container/30 transition-all cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">nutrition</span>
+<span class="material-symbols-outlined text-on-surface-variant opacity-50">chevron_right</span>
+</div>
+<h4 class="font-bold text-on-surface">Nutritional Info</h4>
+<p class="text-xs text-on-surface-variant">Calorie count, allergens, and dietary labels.</p>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl flex flex-col gap-sm border border-outline-variant/20 hover:border-primary-container/30 transition-all cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">tune</span>
+<span class="material-symbols-outlined text-on-surface-variant opacity-50">chevron_right</span>
+</div>
+<h4 class="font-bold text-on-surface">Modifiers</h4>
+<p class="text-xs text-on-surface-variant">Add-ons, choices, and size variations.</p>
+</div>
+</div>
+</div>
+</form>
+</main>
+<!-- Sticky Action Footer -->
+<footer class="fixed bottom-0 w-full z-50 glass-panel border-t border-outline-variant/30 flex justify-center items-center h-24 px-container-padding">
+<div class="max-w-4xl w-full flex items-center justify-between gap-md">
+<button class="px-8 py-4 rounded-xl border border-primary text-primary font-bold hover:bg-primary/5 transition-colors active:scale-95">
+            Discard
+        </button>
+<div class="flex gap-md">
+<button class="px-10 py-4 rounded-xl bg-primary-container text-on-primary-container font-extrabold shadow-lg hover:shadow-primary-container/20 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center gap-sm" id="save-btn" type="submit">
+<span class="material-symbols-outlined">save</span>
+                Save Changes
+            </button>
+</div>
+</div>
+</footer>
+<!-- Bottom Navigation (Mobile Only Shell) -->
+<nav class="md:hidden fixed bottom-0 w-full z-[60] flex justify-around items-center h-20 px-2 pb-2 bg-surface-container dark:bg-inverse-surface border-t border-outline-variant rounded-t-xl shadow-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-sm text-label-sm">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</div>
+</nav>
+<script>
+    // Micro-interactions and Save Feedback
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const originalContent = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+        saveBtn.disabled = true;
+        
+        setTimeout(() => {
+            saveBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Saved!';
+            saveBtn.classList.replace('bg-primary-container', 'bg-secondary');
+            saveBtn.classList.replace('text-on-primary-container', 'text-white');
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = originalContent;
+                saveBtn.classList.replace('bg-secondary', 'bg-primary-container');
+                saveBtn.classList.replace('text-white', 'text-on-primary-container');
+                saveBtn.disabled = false;
+            }, 2000);
+        }, 1200);
+    });
+</script>
+</body></html>

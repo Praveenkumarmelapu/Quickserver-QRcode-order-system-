@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout - LuxeDine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bottom-sheet-transition {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#7cf994",
+                        "surface-container-high": "#dee9fc",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed-dim": "#ffb59d",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e1bfb5",
+                        "surface-tint": "#ab3500",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed-dim": "#62df7d",
+                        "primary-fixed": "#ffdbd0",
+                        "on-secondary-container": "#007230",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb59d",
+                        "on-surface-variant": "#594139",
+                        "primary-container": "#ff6b35",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary": "#006e2d",
+                        "surface-dim": "#d0dbed",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-secondary-fixed": "#002109",
+                        "on-background": "#121c2a",
+                        "background": "#f8f9ff",
+                        "tertiary": "#00677e",
+                        "tertiary-fixed": "#b5ebff",
+                        "outline": "#8d7168",
+                        "on-primary-container": "#5f1900",
+                        "on-primary-fixed-variant": "#832600",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e6eeff",
+                        "surface-variant": "#d9e3f6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#27313f",
+                        "secondary-fixed": "#7ffc97",
+                        "tertiary-container": "#00a7cb",
+                        "on-secondary-fixed-variant": "#005320",
+                        "primary": "#ab3500",
+                        "on-surface": "#121c2a",
+                        "on-primary-fixed": "#390c00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "on-tertiary-container": "#003744"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "container-padding": "16px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased overflow-x-hidden min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface shadow-sm flex justify-between items-center px-container-padding h-16">
+<div class="flex items-center gap-sm">
+<button aria-label="Go back" class="p-2 -ml-2 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim font-bold">LuxeDine</h1>
+</div>
+<div class="flex items-center">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-12 px-container-padding max-w-lg mx-auto">
+<!-- Table Summary Header -->
+<section class="mb-xl text-center">
+<div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary-container text-on-primary-container mb-md shadow-sm">
+<span class="font-headline-xl text-headline-xl">12</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Checkout Table 12</h2>
+<p class="text-on-surface-variant font-body-md">Confirm your details and place your order</p>
+</section>
+<!-- Form Sections -->
+<form class="space-y-lg" id="checkout-form">
+<!-- Customer Identity -->
+<div class="space-y-gutter">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-1 uppercase tracking-wider" for="customer_name">Customer Name</label>
+<input class="w-full h-14 px-md rounded-xl border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none text-body-lg font-body-lg" id="customer_name" placeholder="Enter your full name" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-1 uppercase tracking-wider" for="phone_number">Phone Number</label>
+<input class="w-full h-14 px-md rounded-xl border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none text-body-lg font-body-lg" id="phone_number" placeholder="+1 (555) 000-0000" required="" type="tel"/>
+</div>
+</div>
+<!-- Kitchen Preferences -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-1 uppercase tracking-wider" for="order_notes">Order Notes</label>
+<textarea class="w-full p-md rounded-xl border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none text-body-md font-body-md resize-none" id="order_notes" placeholder="Any allergies or kitchen preferences?" rows="3"></textarea>
+</div>
+<!-- Payment Selection -->
+<div class="space-y-gutter">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant px-1 uppercase tracking-wider">Payment Method</h3>
+<div class="grid grid-cols-1 gap-sm">
+<!-- Option 1: Selected -->
+<label class="relative flex items-center p-md rounded-xl bg-primary-container/10 border-2 border-primary-container cursor-pointer transition-all active:scale-[0.98]">
+<input checked="" class="hidden" name="payment_method" type="radio" value="counter"/>
+<div class="flex items-center gap-md w-full">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-container/20">
+<span class="material-symbols-outlined text-primary-container">payments</span>
+</div>
+<div class="flex-1">
+<p class="font-title-md text-title-md text-on-primary-container">Pay Later at Counter</p>
+<p class="font-body-md text-on-surface-variant opacity-80">Settle your bill after your meal</p>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</label>
+<!-- Option 2: Unselected -->
+<label class="relative flex items-center p-md rounded-xl bg-surface-container border border-outline-variant cursor-pointer transition-all hover:bg-surface-container-high active:scale-[0.98]">
+<input class="hidden" name="payment_method" type="radio" value="online"/>
+<div class="flex items-center gap-md w-full">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+</div>
+<div class="flex-1">
+<p class="font-title-md text-title-md text-on-surface">Online Payment</p>
+<p class="font-body-md text-on-surface-variant">Secure checkout via Card or Wallet</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">radio_button_unchecked</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Order Summary Sneak Peak -->
+<div class="p-md rounded-xl bg-surface-container-low space-y-sm">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Subtotal</span>
+<span class="font-body-md">$42.50</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Taxes &amp; Fees</span>
+<span class="font-body-md">$3.80</span>
+</div>
+<div class="pt-sm border-t border-outline-variant flex justify-between items-center">
+<span class="font-title-md text-title-md text-on-surface">Total</span>
+<span class="font-title-md text-title-md text-primary">$46.30</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-16 bg-primary-container text-on-primary-container font-headline-lg-mobile text-headline-lg-mobile rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all duration-150 flex items-center justify-center gap-sm mt-lg" type="submit">
+<span>Place Order</span>
+<span class="material-symbols-outlined">restaurant</span>
+</button>
+</form>
+<!-- Aesthetic Footer -->
+<footer class="mt-xl pt-lg border-t border-outline-variant/30 text-center text-on-surface-variant opacity-50 text-label-sm flex flex-col items-center gap-sm">
+<p>Secured by LuxeDine Systems</p>
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-[16px]">security</span>
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span class="material-symbols-outlined text-[16px]">potted_plant</span>
+</div>
+</footer>
+</main>
+<!-- Visual Feedback Modal (Hidden by Default) -->
+<div class="fixed inset-0 z-[100] flex items-end justify-center pointer-events-none transition-all duration-500 opacity-0 transform translate-y-10" id="success-modal">
+<div class="bg-inverse-surface text-inverse-on-surface px-lg py-md mb-xl rounded-full shadow-2xl flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-fixed">check_circle</span>
+<p class="font-title-md text-title-md">Sending order to kitchen...</p>
+</div>
+</div>
+<script>
+        // Interactive Payment Selection Logic
+        const radioGroups = document.querySelectorAll('input[name="payment_method"]');
+        radioGroups.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                // Reset all labels
+                document.querySelectorAll('input[name="payment_method"]').forEach(input => {
+                    const label = input.closest('label');
+                    const iconContainer = label.querySelector('.rounded-full');
+                    const checkIcon = label.querySelector('span:last-child');
+                    const textPrimary = label.querySelector('p:first-of-type');
+
+                    label.classList.remove('bg-primary-container/10', 'border-primary-container', 'border-2');
+                    label.classList.add('bg-surface-container', 'border', 'border-outline-variant');
+                    
+                    iconContainer.classList.remove('bg-primary-container/20');
+                    iconContainer.classList.add('bg-surface-container-highest');
+                    
+                    checkIcon.textContent = 'radio_button_unchecked';
+                    checkIcon.classList.remove('text-primary');
+                    checkIcon.classList.add('text-outline-variant');
+                    checkIcon.style.fontVariationSettings = "'FILL' 0";
+
+                    textPrimary.classList.remove('text-on-primary-container');
+                    textPrimary.classList.add('text-on-surface');
+                });
+
+                // Set Active Style
+                if(e.target.checked) {
+                    const label = e.target.closest('label');
+                    const iconContainer = label.querySelector('.rounded-full');
+                    const checkIcon = label.querySelector('span:last-child');
+                    const textPrimary = label.querySelector('p:first-of-type');
+
+                    label.classList.add('bg-primary-container/10', 'border-primary-container', 'border-2');
+                    label.classList.remove('bg-surface-container', 'border', 'border-outline-variant');
+                    
+                    iconContainer.classList.add('bg-primary-container/20');
+                    iconContainer.classList.remove('bg-surface-container-highest');
+
+                    checkIcon.textContent = 'check_circle';
+                    checkIcon.classList.add('text-primary');
+                    checkIcon.classList.remove('text-outline-variant');
+                    checkIcon.style.fontVariationSettings = "'FILL' 1";
+
+                    textPrimary.classList.add('text-on-primary-container');
+                    textPrimary.classList.remove('text-on-surface');
+                }
+            });
+        });
+
+        // Form Submission Animation
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            modal.classList.add('opacity-100', 'translate-y-0');
+            
+            const btn = e.target.querySelector('button');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.location.reload(); // Simulate routing/refresh
+            }, 2500);
+        });
+    </script>
+</body></html>

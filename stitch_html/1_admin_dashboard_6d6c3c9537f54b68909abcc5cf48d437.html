@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine Admin Dashboard</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        /* Custom scrollbar for data tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e1bfb5;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d0dbed",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#ffb59d",
+                        "on-secondary-fixed-variant": "#005320",
+                        "surface": "#f8f9ff",
+                        "surface-container-highest": "#d9e3f6",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#27313f",
+                        "on-error-container": "#93000a",
+                        "outline": "#8d7168",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#ab3500",
+                        "surface-container": "#e6eeff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#00677e",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#007230",
+                        "on-primary-fixed-variant": "#832600",
+                        "secondary-fixed-dim": "#62df7d",
+                        "primary-container": "#ff6b35",
+                        "primary": "#ab3500",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-primary-container": "#5f1900",
+                        "tertiary-container": "#00a7cb",
+                        "outline-variant": "#e1bfb5",
+                        "background": "#f8f9ff",
+                        "on-surface-variant": "#594139",
+                        "on-background": "#121c2a",
+                        "surface-variant": "#d9e3f6",
+                        "primary-fixed-dim": "#ffb59d",
+                        "secondary": "#006e2d",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002109",
+                        "on-primary-fixed": "#390c00",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "on-tertiary-container": "#003744",
+                        "on-surface": "#121c2a",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#7ffc97",
+                        "tertiary-fixed": "#b5ebff",
+                        "secondary-container": "#7cf994",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "container-padding": "16px",
+                        "sm": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden flex h-screen">
+<!-- NavigationDrawer (Sidebar) -->
+<!-- The "Destination" Rule: Visible on Desktop, Hidden on Mobile -->
+<aside class="hidden md:flex h-screen w-64 flex-col py-lg bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant z-50">
+<div class="px-6 mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-lg">LuxeDine</h1>
+</div>
+<!-- Header Profile Section -->
+<div class="flex flex-col gap-xs px-6 mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a restaurant branch manager in a well-lit, minimalist modern office. The lighting is soft and flattering, highlighting the professional attire. The background features clean architectural lines and subtle warm wood textures, maintaining a high-end corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU62FZLEn1ucBJQiUSp_auN0-UvGbKJpWseVpGteqOVYXsmO5bTy6cOkUyFUE6qy1oBblI11vfY6JXZKly4WK67epbVLU5pWDehZFOVehIBemvY-_QljEbJdP8T0zWFFZUApCejaHosR7R_xnVO4-f1kCNGUNMEaMpLLZKXx6CwkKAPZRfaYHfXf0cnM2Sq_YQ8UTVzAzhORSmLFuoj2wSW-zdqL-NlchCNmud7UUoQSOHpaK9BOKiXgAwqVOIfitFNAycTH1VtGo"/>
+</div>
+<div>
+<p class="font-title-md text-on-surface text-[14px]">Store Admin</p>
+<p class="font-body-md text-on-surface-variant text-[12px]">Main Branch</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow flex flex-col gap-1">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-md bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2 cursor-pointer active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<!-- Inventory -->
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high cursor-pointer active:opacity-80 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md">Inventory</span>
+</a>
+<!-- Live Orders -->
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high cursor-pointer active:opacity-80 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span class="font-body-md">Live Orders</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high cursor-pointer active:opacity-80 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-body-md">Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-md text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high cursor-pointer active:opacity-80 transition-all rounded-lg mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col overflow-y-auto custom-scrollbar relative">
+<!-- TopAppBar (Execution) -->
+<header class="fixed top-0 w-full z-40 md:relative bg-surface dark:bg-inverse-surface shadow-sm flex justify-between items-center px-container-padding h-16">
+<div class="flex items-center gap-md">
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim font-bold">Dashboard</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<input class="bg-surface-container-low border-none rounded-full px-10 py-2 text-body-md w-64 focus:ring-2 focus:ring-primary-container outline-none transition-all" placeholder="Search orders..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant" data-icon="search">search</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors active:scale-95 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="p-md md:p-xl space-y-lg mt-16 md:mt-0 pb-24 md:pb-lg">
+<!-- KPI Section (Bento Grid Style) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Revenue Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+<span class="text-secondary text-label-sm bg-secondary-container/20 px-2 py-0.5 rounded-full">+12%</span>
+</div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-wider">Revenue</p>
+<h3 class="font-headline-xl text-headline-xl text-on-surface">$2,450</h3>
+</div>
+<!-- Orders Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="shopping_bag">shopping_bag</span>
+<span class="text-secondary text-label-sm bg-secondary-container/20 px-2 py-0.5 rounded-full">+5%</span>
+</div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-wider">Orders</p>
+<h3 class="font-headline-xl text-headline-xl text-on-surface">84</h3>
+</div>
+<!-- Active Tables -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="table_restaurant">table_restaurant</span>
+<span class="text-on-surface-variant text-label-sm bg-surface-container-high px-2 py-0.5 rounded-full">60%</span>
+</div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-wider">Active Tables</p>
+<h3 class="font-headline-xl text-headline-xl text-on-surface">12/20</h3>
+</div>
+<!-- Prep Time -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-error" data-icon="timer">timer</span>
+<span class="text-error text-label-sm bg-error-container/20 px-2 py-0.5 rounded-full">-2m</span>
+</div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-wider">Avg. Prep Time</p>
+<h3 class="font-headline-xl text-headline-xl text-on-surface">18m</h3>
+</div>
+</section>
+<!-- Middle Section: Chart & Quick Stats -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Sales Overview Chart -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-title-md text-on-surface">Sales Overview</h2>
+<select class="bg-surface-container-low border-none rounded-lg text-body-md px-4 py-1.5 focus:ring-0">
+<option>Today</option>
+<option>Weekly</option>
+</select>
+</div>
+<div class="chart-container flex items-end justify-between gap-2 px-2">
+<!-- Simplified Visualization Bars for Peak Hours -->
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/20 rounded-t-sm h-12 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">10 AM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/30 rounded-t-sm h-24 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">12 PM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/80 rounded-t-sm h-48 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">2 PM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/40 rounded-t-sm h-20 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">4 PM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary rounded-t-sm h-56 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">6 PM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/90 rounded-t-sm h-52 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">8 PM</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group">
+<div class="w-full bg-primary/20 rounded-t-sm h-16 group-hover:bg-primary transition-all duration-300"></div>
+<span class="text-[10px] text-on-surface-variant mt-2">10 PM</span>
+</div>
+</div>
+</div>
+<!-- Top Sellers / Staff Activity -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+<h2 class="font-title-md text-on-surface mb-lg">Top Menu Items</h2>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-end restaurant photography of a signature steak dish, garnished with fresh rosemary and sea salt, served on a matte charcoal ceramic plate. The lighting is moody and warm, emphasizing the texture of the seared meat. Minimalist background with a soft bokeh of a dimly lit restaurant." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn5aNONOg9XDJKiOznl5YQt361OxgA2yl8Ko_6JrmaCIB0s6trMMQ31driUCx-WQGD_hlQf_Xf2ovLN60q3tXs7u80M0QIzQJeUlLk_61tNpu2WgSrGJ4edQb4K49pJS1kJfcK53YGMSbjM_obzYSVjPNEtWRWpE2ufQqR96VJeB9p0W7mXtAFeEoAHEKYGQS6oXtgRD_u30QUo1Eac_FFUWJPFv4kZZbHqM-n1rjoo_mWOhz0qumiARKNGQ43ti99vg4mh2NG0OU"/>
+</div>
+<div class="flex-grow">
+<p class="font-title-md text-[14px]">Wagyu Ribeye</p>
+<p class="text-[12px] text-on-surface-variant">42 Sold Today</p>
+</div>
+<span class="font-bold text-primary">$1,890</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A beautifully plated truffle risotto in a wide-rimmed white porcelain bowl, garnished with shaved black truffles and a micro-green sprout. Bright, natural overhead lighting captures the creaminess of the dish. The style is clean, modern, and appetizingly high-end." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ53DgCeFapt7oQGvzUjfLU3jtlHazfAWyDBhkxpB-oxGhUE8LEUZAfX0YJLSYAHvIJzkiQqrWT040XLecqkq3TLMiC3HRZSRL74cAl753zmUshKpkkoVIqqGbgPtzzNd4jYe2O1ETDPdrMbRrIj88oHz5gtue44P143CLoE2c5mp4O8C6MoYTgqUNTk93ivADAkHq5q6t19Vndl1ih-GUdt-bZ5zCWN57QJ5Z_eCgl5CnwquUVjfBs6OS4xgnkrR_lpUs7GfiU_o"/>
+</div>
+<div class="flex-grow">
+<p class="font-title-md text-[14px]">Truffle Risotto</p>
+<p class="text-[12px] text-on-surface-variant">28 Sold Today</p>
+</div>
+<span class="font-bold text-primary">$840</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="An artisanal cocktail in a crystal coupe glass, with a single clear ice sphere and an orange peel twist. The background is a soft-focus bar setting with warm, golden ambient lighting. The drink is vibrant and sophisticated, echoing a luxury dining atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDumrMcngwYA7fAjyMqiTdSBTRVXQcRKq1ugRP1Ox-JYhV45oLCjd9smBu95hlD6FjfCmlf1c7g1wY-AyYDmbxpgtbzY-3BqxNe45WCMa0HmsVwr_r47KhqyGHysb90W5GEDSImM9_3jNgVmDo5H6mQEL7k8a05meyNXactYtCizUNmMpEh5VS8ZlpXLnIaYSulNxSLncN5DSFitzaVJ0cP0zHojYbx7ror3dvEu75xJWOsDd_kcYFi9v-wXim3uanHuo3yIPz1ICM"/>
+</div>
+<div class="flex-grow">
+<p class="font-title-md text-[14px]">Old Fashioned</p>
+<p class="text-[12px] text-on-surface-variant">56 Sold Today</p>
+</div>
+<span class="font-bold text-primary">$728</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Orders Table Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<div class="p-lg flex justify-between items-center border-b border-outline-variant">
+<h2 class="font-title-md text-on-surface">Recent Orders</h2>
+<button class="text-primary font-label-sm hover:underline">View All</button>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-on-surface-variant font-label-sm uppercase tracking-wider">
+<tr>
+<th class="px-lg py-4">Order ID</th>
+<th class="px-lg py-4">Customer</th>
+<th class="px-lg py-4">Status</th>
+<th class="px-lg py-4">Time</th>
+<th class="px-lg py-4 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-4 font-bold text-on-surface">#4582</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">JD</div>
+<span>John Doe</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-3 py-1 rounded-full text-[12px] font-semibold bg-secondary-container text-on-secondary-container">Completed</span>
+</td>
+<td class="px-lg py-4 text-on-surface-variant">12:45 PM</td>
+<td class="px-lg py-4 text-right font-bold">$124.00</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-4 font-bold text-on-surface">#4583</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">AS</div>
+<span>Alice Smith</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-3 py-1 rounded-full text-[12px] font-semibold bg-primary-container/20 text-primary">Preparing</span>
+</td>
+<td class="px-lg py-4 text-on-surface-variant">1:02 PM</td>
+<td class="px-lg py-4 text-right font-bold">$89.50</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-4 font-bold text-on-surface">#4584</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">MK</div>
+<span>Mike King</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-3 py-1 rounded-full text-[12px] font-semibold bg-surface-container-high text-on-surface-variant">Scheduled</span>
+</td>
+<td class="px-lg py-4 text-on-surface-variant">1:15 PM</td>
+<td class="px-lg py-4 text-right font-bold">$210.00</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-4 font-bold text-on-surface">#4585</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">BW</div>
+<span>Ben White</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-3 py-1 rounded-full text-[12px] font-semibold bg-secondary-container text-on-secondary-container">Completed</span>
+</td>
+<td class="px-lg py-4 text-on-surface-variant">1:20 PM</td>
+<td class="px-lg py-4 text-right font-bold">$45.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- BottomNavBar (Mobile Only Execution) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-2 bg-surface-container dark:bg-inverse-surface border-t border-outline-variant rounded-t-xl shadow-lg">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-sm text-label-sm">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</nav>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple logic for side drawer toggle on mobile
+            const menuBtn = document.querySelector('header button');
+            const sidebar = document.querySelector('aside');
+            
+            if (menuBtn && sidebar) {
+                menuBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('hidden');
+                    sidebar.classList.toggle('fixed');
+                    sidebar.classList.toggle('z-[60]');
+                    sidebar.classList.toggle('w-full');
+                });
+            }
+
+            // Animate progress indicators or charts on load
+            const bars = document.querySelectorAll('.chart-container div div');
+            bars.forEach((bar, index) => {
+                const height = bar.style.height || bar.classList.value.match(/h-\d+/)[0].split('-')[1] * 4 + 'px';
+                bar.style.height = '0px';
+                setTimeout(() => {
+                    bar.style.height = height;
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine Staff Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d0dbed",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#ffb59d",
+                        "on-secondary-fixed-variant": "#005320",
+                        "surface": "#f8f9ff",
+                        "surface-container-highest": "#d9e3f6",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#27313f",
+                        "on-error-container": "#93000a",
+                        "outline": "#8d7168",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#ab3500",
+                        "surface-container": "#e6eeff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#00677e",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#007230",
+                        "on-primary-fixed-variant": "#832600",
+                        "secondary-fixed-dim": "#62df7d",
+                        "primary-container": "#ff6b35",
+                        "primary": "#ab3500",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-primary-container": "#5f1900",
+                        "tertiary-container": "#00a7cb",
+                        "outline-variant": "#e1bfb5",
+                        "background": "#f8f9ff",
+                        "on-surface-variant": "#594139",
+                        "on-background": "#121c2a",
+                        "surface-variant": "#d9e3f6",
+                        "primary-fixed-dim": "#ffb59d",
+                        "secondary": "#006e2d",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002109",
+                        "on-primary-fixed": "#390c00",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "on-tertiary-container": "#003744",
+                        "on-surface": "#121c2a",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#7ffc97",
+                        "tertiary-fixed": "#b5ebff",
+                        "secondary-container": "#7cf994",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "container-padding": "16px",
+                        "sm": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen">
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center px-container-padding py-xl relative overflow-hidden">
+<!-- Subtle Ambient Background Element -->
+<div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-primary-container/10 rounded-full blur-3xl"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl"></div>
+<div class="w-full max-w-md z-10">
+<!-- Branding Header -->
+<div class="flex flex-col items-center mb-xl">
+<div class="mb-lg p-xs bg-surface-container-lowest rounded-xl shadow-sm">
+<img class="w-20 h-20 object-contain" data-alt="A sophisticated and modern restaurant logo featuring a stylized minimalist 'L' and 'D' intertwined, rendered in a rich copper and charcoal color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5rv9N6cGYyadJH7xk9th4VBIYQSMH6A4ILpaZH3LrLDWNM0gDHI9l-dtZSP45yFHMsyrCAK7H0AIAZCGrKrWvercr-ZBKFYXZra2RgaS_4RP6gZ-VkmH0qryGro4rPZstSAT7iRqBGHU1Vh8mUs-5QHmrjuhISWx0dclhl0KCyf60ZgrFdTHBA56d0BXgWTOKv7BjSYUwCi4SRtH9EFBioXI5pLxsNFDokDjRq1_yZ16zyeJlxo7lGMY5iKTTsg5e9Iz12-on1fY"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold tracking-tight">LuxeDine</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs tracking-wider">STAFF PORTAL</p>
+</div>
+<!-- Login Card -->
+<div class="bg-surface-container-lowest border border-outline/10 rounded-xl p-lg shadow-sm">
+<form class="space-y-lg" id="login-form" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-xs" for="email">Email Address</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 group-focus-within:text-primary transition-colors">mail</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline/20 rounded-xl font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/40" id="email" name="email" placeholder="name@luxedine.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-xs" for="password">Password</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full pl-12 pr-12 py-3 bg-surface border border-outline/20 rounded-xl font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/40" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface transition-colors" id="toggle-password" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Utilities row -->
+<div class="flex items-center justify-between px-xs">
+<label class="flex items-center cursor-pointer group">
+<div class="relative flex items-center">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-5 h-5 border border-outline/30 rounded bg-surface peer-checked:bg-primary peer-checked:border-primary transition-all"></div>
+<span class="material-symbols-outlined absolute text-[16px] text-white opacity-0 peer-checked:opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">check</span>
+</div>
+<span class="ml-sm font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
+</label>
+<a class="font-body-md text-body-md text-primary font-semibold hover:underline decoration-primary/30 underline-offset-4 transition-all" href="#">Forgot password?</a>
+</div>
+<!-- Login Button -->
+<button class="w-full bg-primary-container text-on-primary-container font-title-md text-title-md py-4 rounded-xl shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex justify-center items-center gap-sm relative overflow-hidden" type="submit">
+                    Login
+                    <span class="material-symbols-outlined">login</span>
+</button>
+</form>
+</div>
+<!-- Help/Support Link -->
+<div class="mt-xl text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Having trouble logging in? <br class="sm:hidden"/>
+<a class="text-tertiary font-semibold hover:underline decoration-tertiary/30 underline-offset-4 ml-xs" href="#">Contact Admin Support</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Simple Footer (Legal/Version) -->
+<footer class="p-lg text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant/50">
+        © 2024 LuxeDine Hospitality Systems. v2.4.1-stable
+    </p>
+</footer>
+<script>
+    // Interaction: Ripple feedback for the main button
+    const loginBtn = document.querySelector('button[type="submit"]');
+    loginBtn.addEventListener('click', function(e) {
+        const circle = document.createElement('span');
+        const diameter = Math.max(loginBtn.clientWidth, loginBtn.clientHeight);
+        const radius = diameter / 2;
+        
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - loginBtn.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${e.clientY - loginBtn.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('absolute', 'bg-white/20', 'rounded-full', 'animate-ping', 'pointer-events-none');
+        
+        this.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
+    });
+
+    // Toggle Password Visibility Logic
+    const togglePass = document.getElementById('toggle-password');
+    const passInput = document.getElementById('password');
+    if (togglePass && passInput) {
+        togglePass.addEventListener('click', () => {
+            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passInput.setAttribute('type', type);
+            const icon = togglePass.querySelector('.material-symbols-outlined');
+            icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+    }
+</script>
+</body></html>

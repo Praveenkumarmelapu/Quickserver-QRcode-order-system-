@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine - Forgot Password</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d0dbed",
+                    "inverse-on-surface": "#eaf1ff",
+                    "inverse-primary": "#ffb59d",
+                    "on-secondary-fixed-variant": "#005320",
+                    "surface": "#f8f9ff",
+                    "surface-container-highest": "#d9e3f6",
+                    "surface-container-high": "#dee9fc",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#27313f",
+                    "on-error-container": "#93000a",
+                    "outline": "#8d7168",
+                    "surface-container-low": "#eff4ff",
+                    "surface-tint": "#ab3500",
+                    "surface-container": "#e6eeff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#00677e",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#007230",
+                    "on-primary-fixed-variant": "#832600",
+                    "secondary-fixed-dim": "#62df7d",
+                    "primary-container": "#ff6b35",
+                    "primary": "#ab3500",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-primary-container": "#5f1900",
+                    "tertiary-container": "#00a7cb",
+                    "outline-variant": "#e1bfb5",
+                    "background": "#f8f9ff",
+                    "on-surface-variant": "#594139",
+                    "on-background": "#121c2a",
+                    "surface-variant": "#d9e3f6",
+                    "primary-fixed-dim": "#ffb59d",
+                    "secondary": "#006e2d",
+                    "surface-bright": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#002109",
+                    "on-primary-fixed": "#390c00",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "on-tertiary-container": "#003744",
+                    "on-surface": "#121c2a",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#7ffc97",
+                    "tertiary-fixed": "#b5ebff",
+                    "secondary-container": "#7cf994",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "12px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "container-padding": "16px",
+                    "sm": "8px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-mesh-gradient {
+            background-color: #f8f9ff;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(16, 100%, 95%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(217, 100%, 95%, 1) 0, transparent 50%);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden-state {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col justify-center items-center px-container-padding bg-mesh-gradient">
+<!-- Main Branding / Logo Section (Minimal) -->
+<div class="mb-xl text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold tracking-tight mb-xs">LuxeDine</h1>
+<p class="text-on-surface-variant font-body-md">Staff Portal Access</p>
+</div>
+<!-- Container Card -->
+<main class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-lg p-lg border border-outline-variant/30 fade-in">
+<!-- FORGOT PASSWORD FORM STATE -->
+<div id="forgot-password-state">
+<header class="mb-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">Forgot Password?</h2>
+<p class="text-on-surface-variant font-body-md">Enter your registered work email and we'll send you instructions to reset your password.</p>
+</header>
+<form class="space-y-lg" id="reset-form" onsubmit="handleReset(event)">
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-1" for="email">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<input class="block w-full pl-[44px] pr-md py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary-container focus:border-primary outline-none transition-all placeholder:text-outline-variant text-on-surface" id="email" name="email" placeholder="name@luxedine.com" required="" type="email"/>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-title-md py-3.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-sm hover:brightness-110" type="submit">
+<span>Send Reset Link</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</form>
+<footer class="mt-xl pt-lg border-t border-outline-variant/20 text-center">
+<a class="inline-flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>Back to Login</span>
+</a>
+</footer>
+</div>
+<!-- SUCCESS STATE (Hidden by default) -->
+<div class="hidden-state text-center py-lg" id="success-state">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mx-auto mb-lg shadow-sm">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<header class="mb-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">Reset link sent!</h2>
+<p class="text-on-surface-variant font-body-md px-md">Check your email. We've sent a secure link to reset your account credentials.</p>
+</header>
+<div class="p-md bg-surface-container rounded-lg mb-xl text-label-sm text-on-surface-variant italic">
+                Didn't receive an email? Check your spam folder or wait a few minutes.
+            </div>
+<button class="w-full bg-surface-container-high text-on-surface font-title-md py-3.5 rounded-xl shadow-sm border border-outline-variant active:scale-95 transition-all flex items-center justify-center gap-sm hover:bg-surface-container-highest" onclick="window.location.reload()">
+<span class="material-symbols-outlined">login</span>
+<span>Back to Login</span>
+</button>
+</div>
+</main>
+<!-- Decorative Illustration Background (Abstract) -->
+<div class="fixed bottom-0 left-0 w-full h-1/3 -z-10 opacity-30 pointer-events-none">
+<div class="w-full h-full bg-no-repeat bg-bottom bg-contain" data-alt="A sophisticated, minimalist abstract pattern for a premium restaurant brand. The design features soft, flowing organic shapes in warm orange and muted blue tones on a clean, light-mode white background. The composition is spacious and airy, evoking a sense of calm efficiency and modern digital hospitality. The visual style is professional, high-end, and perfectly aligned with a sleek dining staff portal interface." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDdtzZ7IMwSejdzYzLbcl-nJ2_RlJ1J7zy-Rcgim5iJrTbo3FylMqtUTkqbKu2oW7XKKCGd_vUCxy4IWLz1fyd5Q-zSlXa01b5ZSCJ-NgNK7yXAbHeMpc5Bu2XPvwtcWb4HXAvl4TN7x55XHOHjCRH9kEVt-mSa1acWHsTrDkwe1GOX8U9ToA__ELI88L5j17xneMvEfADcLHHccn8NvrOM89-fMeRUstgE9ZALpHts_G0aHGizDuQ35FMSgwDHucTjbBJjgNRGmo')"></div>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        function handleReset(event) {
+            event.preventDefault();
+            const btn = event.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> <span>Sending...</span>`;
+            
+            // Simulate API Call
+            setTimeout(() => {
+                document.getElementById('forgot-password-state').classList.add('hidden-state');
+                const success = document.getElementById('success-state');
+                success.classList.remove('hidden-state');
+                success.classList.add('fade-in');
+            }, 1200);
+        }
+
+        // Add some subtle parallax or mouse follow to the background if desired
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            document.querySelector('.bg-mesh-gradient').style.backgroundPosition = `${moveX}px ${moveY}px`;
+        });
+    </script>
+</body></html>

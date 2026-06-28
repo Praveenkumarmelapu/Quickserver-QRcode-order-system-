@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeDine - Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d0dbed",
+                    "inverse-on-surface": "#eaf1ff",
+                    "inverse-primary": "#ffb59d",
+                    "on-secondary-fixed-variant": "#005320",
+                    "surface": "#f8f9ff",
+                    "surface-container-highest": "#d9e3f6",
+                    "surface-container-high": "#dee9fc",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#27313f",
+                    "on-error-container": "#93000a",
+                    "outline": "#8d7168",
+                    "surface-container-low": "#eff4ff",
+                    "surface-tint": "#ab3500",
+                    "surface-container": "#e6eeff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#00677e",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#007230",
+                    "on-primary-fixed-variant": "#832600",
+                    "secondary-fixed-dim": "#62df7d",
+                    "primary-container": "#ff6b35",
+                    "primary": "#ab3500",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-primary-container": "#5f1900",
+                    "tertiary-container": "#00a7cb",
+                    "outline-variant": "#e1bfb5",
+                    "background": "#f8f9ff",
+                    "on-surface-variant": "#594139",
+                    "on-background": "#121c2a",
+                    "surface-variant": "#d9e3f6",
+                    "primary-fixed-dim": "#ffb59d",
+                    "secondary": "#006e2d",
+                    "surface-bright": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#002109",
+                    "on-primary-fixed": "#390c00",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "on-tertiary-container": "#003744",
+                    "on-surface": "#121c2a",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#7ffc97",
+                    "tertiary-fixed": "#b5ebff",
+                    "secondary-container": "#7cf994",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "12px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "container-padding": "16px",
+                    "sm": "8px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-chip {
+            background-color: #ff6b35;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+        .glass-effect {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.85);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar (Based on JSON) -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface shadow-sm h-16 flex justify-between items-center px-container-padding">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A modern restaurant logo for LuxeDine, featuring a minimalist chef hat icon integrated with a fine dining fork, set against a vibrant orange and white background in a professional light mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPqBxEm18mSiGWBIryETIN-T6-e78CW8Q2qqjWzR2h-4p6IJZ3tJCHneFjPNr-7ZCaReOK5tq7avKyq213zvl508o51nxsfjP7_PFG17GQY8iMbscVxguzJULPpWN4cXgh-gJB6HTf6RGrGXSBHw2OGdCVrgaYF1k135IGNebvSoGawJ1ufOBS9_jQbot9l1_NRemgPjC6yIOdtbvscy5meLtv7ccxTzM0p9G2copf9QIv5lbP7yWGM6nOHpTVS8O5z29NRZT9bRc"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim font-extrabold tracking-tight">LuxeDine</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</header>
+<main class="pt-20 px-container-padding space-y-md">
+<!-- Search Bar -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-3 pl-12 pr-12 text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" placeholder="Search for dishes, cuisines..." type="text"/>
+<div class="absolute inset-y-0 right-4 flex items-center">
+<span class="material-symbols-outlined text-primary cursor-pointer">tune</span>
+</div>
+</div>
+<!-- Category Chips (Horizontal Scroll) -->
+<div class="flex gap-sm overflow-x-auto no-scrollbar py-2 -mx-container-padding px-container-padding">
+<button class="active-chip px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap transition-all">Menu</button>
+<button class="bg-surface-container border border-outline-variant px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high">Starters</button>
+<button class="bg-surface-container border border-outline-variant px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high">Main Course</button>
+<button class="bg-surface-container border border-outline-variant px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high">Drinks</button>
+<button class="bg-surface-container border border-outline-variant px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high">Desserts</button>
+<button class="bg-surface-container border border-outline-variant px-lg py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high">Snacks</button>
+</div>
+<!-- Featured Banner: Today's Special -->
+<section class="relative h-48 rounded-2xl overflow-hidden shadow-lg group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A high-end gourmet presentation of a signature dish featuring seared scallops and micro-greens, beautifully plated with artistic sauces. The lighting is warm and cinematic, highlighting the fresh textures. Soft modern minimalist restaurant environment in the background with bright white and orange color accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBmo9gQLKWMLD9ZZptY6SFK3HdGzqItx1N5Xx4g-WZ9v9Q38CsEBCzMZUDcy3Ws2XpTvjfLvOxyDK8cbnuEUsh0xVOljjOfMYfDy9vyKj7dgOEKCyZoxODRu9RLnNl2BroIT7YEG0dj1bHQ-TtE6-99p2Tivo_ZxMmGqywUlytalixug9LSv3VsMIueWHQ_9VohjQ3aXckMsiyWWPfWC_5Aytb7azWF99nEL6d5LugBPRXRUVKsKBlt551041CqSX-K2W6ZdsxVuqM')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<span class="bg-primary text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md tracking-widest mb-2 inline-block">Today's Special</span>
+<h2 class="text-white font-headline-lg-mobile text-headline-lg-mobile font-bold">Signature Seared Scallops</h2>
+<p class="text-white/80 text-body-md line-clamp-1">Fresh Atlantic scallops with pea purée and lemon herb butter.</p>
+</div>
+<div class="absolute top-4 right-4 bg-white/20 glass-effect px-3 py-1 rounded-full text-white font-bold text-label-sm">
+                $24.00
+            </div>
+</section>
+<!-- Menu Grid -->
+<section class="space-y-md">
+<div class="flex justify-between items-center">
+<h3 class="font-title-md text-title-md text-on-surface">Popular Dishes</h3>
+<button class="text-primary font-label-sm text-label-sm">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex h-36">
+<div class="w-1/3 relative">
+<img class="h-full w-full object-cover" data-alt="A close-up, appetizing photograph of Truffle Mushroom Pasta served in a shallow white ceramic bowl. Creamy sauce, various mushroom varieties, and a garnish of fresh parsley are visible. High-key, professional studio lighting for food photography with soft shadows and a bright minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuRKLsjpUFTJy0DzyUh6kTumkWQjHK7mFe_86q5N4oy_cEuRaIuEAUagF4v_4aRbs7kjiRVk5ojLnXFzplpeXrez1Z0tUsRW7estFMjDdU5VlJD3jfo52RfMXzts78hAuIxRd7uC-972QjrQg-zYlYAPlgSjL03NjTisxIkiTsufzkZHWx2k4mX4XFrFdVXYXc908jrEfmun5N9aQ55QI6UDRHRx_Jzw3eiIDyrtK1hGBY_hOLPP8KBuaGO5YKwcXmHb8wWzMXbHk"/>
+<div class="absolute top-2 left-2 bg-white/90 rounded-md p-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">eco</span>
+</div>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Truffle Mushroom Pasta</h4>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#FFC107]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold">4.8</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md line-clamp-1 mt-1">Rich cream sauce, wild mushrooms, truffle oil.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary font-bold text-title-md">$18.00</span>
+<button class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full font-label-sm text-label-sm active:scale-95 transition-transform">Add</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex h-36">
+<div class="w-1/3 relative">
+<img class="h-full w-full object-cover" data-alt="A succulent Flame-Grilled Chicken Burger on a brioche bun with melting cheddar, crisp lettuce, and red onion. Professional food styling, vibrant colors, bright studio lighting. Minimalist background, high-frequency dining visual style with orange accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn-h4MbFMywCkjdoD_Oveg8ki-Bg3O7tRuisSGlvi7fHYUOVMuT6NjuGj2pZ52nqUARjcBKhoVaJHLBO8K8njVsB9m_VVGm5px4u7oOJYk3t2Tq0-BxmYay0LXioRAowbpS7qpfhC9OwkbUpO_bjZNfYddk3JFogbwiyaX3hjvyFseaaW1YI6Apq4AeyJetHFkJePsaTH894xmsoexfWxnKoB2EYtUFVNz3MkbJNqhkJF_XtF_imUac9mpOZxR__37JBRVLa1qchM"/>
+<div class="absolute top-2 left-2 bg-white/90 rounded-md p-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-error">explicit</span>
+</div>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Zesty Grill Burger</h4>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#FFC107]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold">4.6</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md line-clamp-1 mt-1">Flame-grilled chicken with spicy mayo &amp; slaw.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary font-bold text-title-md">$14.50</span>
+<button class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full font-label-sm text-label-sm active:scale-95 transition-transform">Add</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex h-36">
+<div class="w-1/3 relative">
+<img class="h-full w-full object-cover" data-alt="A vibrant Garden Fresh Salad featuring heirloom tomatoes, cucumber, feta cheese, and olives in a glass bowl. Bright natural morning light, refreshing and healthy aesthetic, minimalist modern restaurant setting, soft white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8KSl2JbU3uZWa4r-75nF9THGVlzxfyYTuq2lydGSkckgPCQGwrGkGF8MswFNDDTvDHpYsBqrFvS9jYVrbDuC_esrAsX2xlEPhwToKPp8hIhfn1unTiljMPBu_nqnSnOk8YS0OTp3bgGJq9K5IUcIJ-CxrZVF72dFKI8G6qy_hWTKkFY_tVILe8SH4IQkU8UZNhfFEM_1bcj3BhVvx8tkgEPiaR5oH4E8RS9VJ0eQlUPhxyVWI6ZI2ebrFPH118fz-R6fod213eCY"/>
+<div class="absolute top-2 left-2 bg-white/90 rounded-md p-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">eco</span>
+</div>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Garden Medley</h4>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#FFC107]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold">4.9</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md line-clamp-1 mt-1">Mixed greens, balsamic glaze, seasonal veggies.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary font-bold text-title-md">$12.00</span>
+<button class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full font-label-sm text-label-sm active:scale-95 transition-transform">Add</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Cart Button (Suppressed on sub-pages, shown on Home/Menu) -->
+<div class="fixed bottom-24 right-container-padding z-40">
+<button class="bg-primary-container text-on-primary-container flex items-center gap-sm px-lg py-3 rounded-full shadow-lg hover:shadow-xl active:scale-90 transition-all">
+<div class="relative">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-2 -right-2 bg-white text-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">3</span>
+</div>
+<span class="font-label-sm text-label-sm">3 items</span>
+</button>
+</div>
+<!-- BottomNavBar (Based on JSON) -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container dark:bg-inverse-surface flex justify-around items-center h-20 px-2 pb-2 rounded-t-xl shadow-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-sm text-label-sm">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for chips
+        document.querySelectorAll('button.rounded-full').forEach(chip => {
+            chip.addEventListener('click', function() {
+                if(this.innerText !== 'Add' && this.innerText !== 'View All') {
+                    document.querySelectorAll('button.active-chip').forEach(active => {
+                        active.classList.remove('active-chip');
+                        active.classList.add('bg-surface-container', 'border', 'border-outline-variant');
+                    });
+                    this.classList.add('active-chip');
+                    this.classList.remove('bg-surface-container', 'border', 'border-outline-variant');
+                }
+            });
+        });
+
+        // Simple cart counter interaction
+        document.querySelectorAll('button:contains("Add")').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Simulation logic
+                const countBadge = document.querySelector('.fixed.bottom-24 .bg-white');
+                let count = parseInt(countBadge.innerText);
+                countBadge.innerText = count + 1;
+                
+                // Visual feedback
+                this.innerText = 'Added';
+                this.classList.replace('bg-primary-container', 'bg-secondary-container');
+                this.classList.replace('text-on-primary-container', 'text-on-secondary-container');
+                setTimeout(() => {
+                    this.innerText = 'Add';
+                    this.classList.replace('bg-secondary-container', 'bg-primary-container');
+                    this.classList.replace('text-on-secondary-container', 'text-on-primary-container');
+                }, 1000);
+            });
+        });
+
+        // Custom selector polyfill for :contains
+        document.querySelectorAll('button').forEach(btn => {
+           if(btn.textContent === 'Add') {
+                btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const countBadge = document.querySelector('.fixed.bottom-24 .bg-white');
+                let count = parseInt(countBadge.innerText);
+                countBadge.innerText = count + 1;
+                
+                this.innerText = 'Added';
+                this.classList.add('opacity-50');
+                setTimeout(() => {
+                    this.innerText = 'Add';
+                    this.classList.remove('opacity-50');
+                }, 800);
+            });
+           }
+        });
+    </script>
+</body></html>
