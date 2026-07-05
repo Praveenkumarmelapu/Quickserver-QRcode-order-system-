@@ -14,6 +14,7 @@ interface Table {
 
 export default function LandingClient({ table }: { table: Table }) {
   const setTableSession = useOrderStore((state) => state.setTableSession);
+  const setActiveOrderId = useOrderStore((state) => state.setActiveOrderId);
   const router = useRouter();
   const [animatingOut, setAnimatingOut] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -26,10 +27,19 @@ export default function LandingClient({ table }: { table: Table }) {
       capacity: table.capacity,
       qrToken: table.qrToken,
     });
+
+    // If the table status is AVAILABLE, clear previous session order memory to prevent leakage to next scan
+    if (table.status === 'AVAILABLE') {
+      setActiveOrderId(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('luxedine-placed-orders');
+      }
+    }
+
     // Trigger staggered animations after mount
     const timer = setTimeout(() => setMounted(true), 50);
     return () => clearTimeout(timer);
-  }, [table, setTableSession]);
+  }, [table, setTableSession, setActiveOrderId]);
 
   const handleContinue = () => {
     setAnimatingOut(true);

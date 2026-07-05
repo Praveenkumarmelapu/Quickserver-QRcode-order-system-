@@ -141,6 +141,18 @@ export default function CheckoutPage() {
       }
 
       const createdOrder = await response.json();
+
+      // Save order ID to device history to prevent leakage to subsequent table scans
+      if (typeof window !== 'undefined') {
+        try {
+          const placedOrders = JSON.parse(localStorage.getItem('luxedine-placed-orders') || '[]');
+          placedOrders.push(createdOrder.id);
+          localStorage.setItem('luxedine-placed-orders', JSON.stringify(placedOrders));
+        } catch (e) {
+          console.error('Error writing placed order history:', e);
+        }
+      }
+
       clearCart();
       router.push(`/track/${createdOrder.id}`);
 

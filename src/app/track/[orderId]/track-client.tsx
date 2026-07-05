@@ -54,9 +54,41 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
         const res = await fetch(`/api/orders?tableId=${tableId}`);
         if (res.ok) {
           const data = await res.json();
+          // Load this customer's explicitly placed order IDs from device storage
+          let myPlacedOrderIds: string[] = [];
+          if (typeof window !== 'undefined') {
+            try {
+              myPlacedOrderIds = JSON.parse(localStorage.getItem('luxedine-placed-orders') || '[]');
+            } catch (e) {}
+          }
+
           // Filter to show orders from this table session (placed in the last 6 hours)
+          // AND ensure the orders belong to this specific customer session/device
           const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
-          const recentOrders = data.filter((o: any) => new Date(o.createdAt) >= sixHoursAgo);
+          const recentOrders = data.filter((o: any) => {
+            const isRecent = new Date(o.createdAt) >= sixHoursAgo;
+            if (!isRecent) return false;
+
+            // An order is owned by this session if:
+            // 1. It is the current order being tracked
+            // 2. OR its ID was explicitly placed on this browser device
+            const isMyOrder = o.id === order.id || myPlacedOrderIds.includes(o.id);
+
+            // If the order is COMPLETED, only show it if it belongs to this customer session
+            if (o.status === 'COMPLETED') {
+              return isMyOrder;
+            }
+
+            // If the customer has placed orders in this session, ONLY show their own active orders.
+            // This prevents previous customer's active orders (if left unbilled/uncompleted by admin)
+            // from leaking to the new customer's scan.
+            if (myPlacedOrderIds.length > 0) {
+              return isMyOrder;
+            }
+
+            // If no orders placed on this device yet, they can only track the current order URL
+            return o.id === order.id;
+          });
           setSessionOrders(recentOrders);
         }
       } catch (err) {
