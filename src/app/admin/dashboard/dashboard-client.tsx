@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { playNotificationSound, unlockAudio } from '@/lib/sounds';
 
 interface Table {
   id: string;
@@ -64,17 +65,34 @@ export default function DashboardClient({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [modalType, setModalType] = useState<'revenue' | 'orders' | 'tables' | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterPeriod, setFilterPeriod] = useState<'today' | 'weekly' | 'monthly' | 'custom' | 'all'>('all');
+  const [customStartDate, setCustomStartDate] = useState<string>('');
+  const [customEndDate, setCustomEndDate] = useState<string>('');
+
+  const ordersRef = useRef<Order[]>(orders);
+  const requestsRef = useRef<WaiterRequest[]>(requests);
+
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
+
+  useEffect(() => {
+    requestsRef.current = requests;
+  }, [requests]);
 
   const handleOpenHistoryModal = (type: 'revenue' | 'orders' | 'tables') => {
     setModalType(type);
     setSearchQuery('');
+    setFilterPeriod('all');
+    setCustomStartDate('');
+    setCustomEndDate('');
   };
 
   const handleCloseHistoryModal = () => {
     setModalType(null);
   };
 
-  const downloadRevenueCSV = (period: 'today' | 'weekly' | 'monthly' | 'all') => {
+  const downloadRevenueCSV = (period: 'today' | 'weekly' | 'monthly' | 'custom' | 'all') => {
     const now = new Date();
     const filtered = completedOrders.filter(order => {
       const date = new Date(order.createdAt);
@@ -88,6 +106,18 @@ export default function DashboardClient({
       if (period === 'monthly') {
         const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         return date >= oneMonthAgo;
+      }
+      if (period === 'custom') {
+        if (customStartDate) {
+          const start = new Date(customStartDate);
+          start.setHours(0, 0, 0, 0);
+          if (date < start) return false;
+        }
+        if (customEndDate) {
+          const end = new Date(customEndDate);
+          end.setHours(23, 59, 59, 999);
+          if (date > end) return false;
+        }
       }
       return true; // all
     });
@@ -138,8 +168,33 @@ export default function DashboardClient({
 
   const activeOrdersList = orders.filter((o) => o.status !== 'COMPLETED').slice(0, 5);
 
-  // Filter completed orders based on search query (table number, item name, or order ID)
+  // Filter completed orders based on period and search query
   const filteredCompletedOrders = completedOrders.filter(order => {
+    // 1. Filter by period
+    const now = new Date();
+    const date = new Date(order.createdAt);
+    if (filterPeriod === 'today') {
+      if (date.toDateString() !== now.toDateString()) return false;
+    } else if (filterPeriod === 'weekly') {
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      if (date < oneWeekAgo) return false;
+    } else if (filterPeriod === 'monthly') {
+      const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      if (date < oneMonthAgo) return false;
+    } else if (filterPeriod === 'custom') {
+      if (customStartDate) {
+        const start = new Date(customStartDate);
+        start.setHours(0, 0, 0, 0);
+        if (date < start) return false;
+      }
+      if (customEndDate) {
+        const end = new Date(customEndDate);
+        end.setHours(23, 59, 59, 999);
+        if (date > end) return false;
+      }
+    }
+
+    // 2. Filter by search query
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
     
@@ -149,6 +204,8 @@ export default function DashboardClient({
     
     return matchesTable || matchesItem || matchesId;
   });
+
+  const modalFilteredRevenue = filteredCompletedOrders.reduce((acc, o) => acc + o.total, 0);
 
   const syncDashboardData = async () => {
     try {
@@ -164,6 +221,21 @@ export default function DashboardClient({
           tablesRes.json(),
           requestsRes.json()
         ]);
+
+        // Detect and play sound for new pending orders
+        const currentIds = new Set(ordersRef.current.map(o => o.id));
+        const hasNewPending = ordersData.some((o: any) => !currentIds.has(o.id) && o.status === 'PENDING');
+        if (hasNewPending) {
+          playNotificationSound('newOrder');
+        }
+
+        // Detect and play sound for new active assistance/bill requests
+        const currentReqIds = new Set(requestsRef.current.map(r => r.id));
+        const hasNewReq = requestsData.some((r: any) => !currentReqIds.has(r.id) && !r.resolved);
+        if (hasNewReq) {
+          playNotificationSound('serviceRequest');
+        }
+
         setOrders(ordersData);
         setTables(tablesData);
         setRequests(requestsData);
@@ -173,18 +245,12 @@ export default function DashboardClient({
     }
   };
 
-  // Unlock audio, request notification permission, and set up live-event listener
+  // Unlock audio, request notification permission, and set up live-event listener + polling
   useEffect(() => {
-    let playSound: any = null;
-    import('@/lib/sounds').then((mod) => {
-      playSound = mod.playNotificationSound;
-      const handleClick = () => { mod.unlockAudio(); };
-      document.addEventListener('click', handleClick, { once: false });
-    });
+    const handleClick = () => { unlockAudio(); };
+    document.addEventListener('click', handleClick, { once: false });
 
-    const handleTouch = () => {
-      import('@/lib/sounds').then((mod) => mod.unlockAudio());
-    };
+    const handleTouch = () => { unlockAudio(); };
     document.addEventListener('touchstart', handleTouch, { once: true });
 
     // Request notification permission for background tab support
@@ -208,7 +274,7 @@ export default function DashboardClient({
           const { type, data } = parsed;
 
           if (type === 'NEW_ORDER') {
-            if (playSound) playSound('newOrder');
+            playNotificationSound('newOrder');
             setOrders((prev) => {
               if (prev.some((o) => o.id === data.id)) return prev;
               return [data, ...prev];
@@ -230,13 +296,13 @@ export default function DashboardClient({
           } else if (type === 'ORDER_STATUS_UPDATED') {
             setOrders((prev) => prev.map((o) => (o.id === data.id ? data : o)));
             if (data.status === 'COMPLETED') {
-              if (playSound) playSound('orderComplete');
+              playNotificationSound('orderComplete');
               setTables((prev) =>
                 prev.map((t) => (t.id === data.tableId ? { ...t, status: 'AVAILABLE' } : t))
               );
             }
           } else if (type === 'ASSISTANCE_REQUEST' || type === 'BILL_REQUEST') {
-            if (playSound) playSound('serviceRequest');
+            playNotificationSound('serviceRequest');
             setRequests((prev) => {
               if (prev.some((r) => r.id === data.id)) return prev;
               return [...prev, data];
@@ -276,6 +342,11 @@ export default function DashboardClient({
 
     connectSSE();
 
+    // Start client polling fallback for Vercel/serverless environments
+    const pollInterval = setInterval(() => {
+      syncDashboardData();
+    }, 5000); // sync every 5 seconds
+
     // Re-sync and reconnect when tab returns to foreground
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -288,7 +359,9 @@ export default function DashboardClient({
     return () => {
       if (eventSource) eventSource.close();
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('click', handleClick);
     };
   }, []);
 
@@ -369,8 +442,8 @@ export default function DashboardClient({
   // Group orders dynamically by selected period (hourly or weekly)
   const getSalesData = () => {
     if (salesPeriod === 'today') {
-      const counts = [0, 0, 0, 0, 0, 0, 0];
-      const labels = ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM'];
+      const counts = [0, 0, 0, 0, 0, 0, 0, 0];
+      const labels = ['8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM'];
       orders.forEach(o => {
         const orderDate = new Date(o.createdAt);
         const today = new Date();
@@ -378,19 +451,20 @@ export default function DashboardClient({
 
         const hour = orderDate.getHours();
         let index = 0;
-        if (hour >= 21) index = 6;      // 10 PM
-        else if (hour >= 19) index = 5; // 8 PM
-        else if (hour >= 17) index = 4; // 6 PM
-        else if (hour >= 15) index = 3; // 4 PM
-        else if (hour >= 13) index = 2; // 2 PM
-        else if (hour >= 11) index = 1; // 12 PM
-        else index = 0;                 // 10 AM
+        if (hour >= 22) index = 7;      // 10 PM
+        else if (hour >= 20) index = 6; // 8 PM
+        else if (hour >= 18) index = 5; // 6 PM
+        else if (hour >= 16) index = 4; // 4 PM
+        else if (hour >= 14) index = 3; // 2 PM
+        else if (hour >= 12) index = 2; // 12 PM
+        else if (hour >= 10) index = 1; // 10 AM
+        else index = 0;                 // 8 AM
         counts[index] += o.total;
       });
 
       const hasData = counts.some(c => c > 0);
       return {
-        values: hasData ? counts : [120, 240, 480, 200, 560, 520, 160],
+        values: hasData ? counts : [80, 180, 320, 240, 480, 560, 380, 120],
         labels
       };
     } else {
@@ -548,9 +622,15 @@ export default function DashboardClient({
       {/* Middle Layout Panel (Sales Chart & Top Menu Items) */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sales Overview Chart */}
-        <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-sm font-extrabold uppercase tracking-wider text-on-surface">Sales Overview</h2>
+        <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm relative overflow-hidden">
+          <div className="flex justify-between items-center mb-6 relative z-10">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-sm font-extrabold uppercase tracking-wider text-on-surface">Sales Overview</h2>
+              <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wide uppercase select-none border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Realtime Live</span>
+              </div>
+            </div>
             <select 
               value={salesPeriod}
               onChange={(e) => setSalesPeriod(e.target.value as 'today' | 'weekly')}
@@ -560,21 +640,33 @@ export default function DashboardClient({
               <option value="weekly">Weekly</option>
             </select>
           </div>
-          <div className="h-[200px] flex items-end justify-between gap-3 px-2 pt-4">
+          
+          <div className="h-[200px] flex items-end justify-between gap-3 px-2 pt-4 relative">
+            {/* Gridlines in background */}
+            <div className="absolute inset-x-0 bottom-[28px] top-6 flex flex-col justify-between pointer-events-none opacity-20 z-0">
+              <div className="border-b border-dashed border-outline-variant w-full"></div>
+              <div className="border-b border-dashed border-outline-variant w-full"></div>
+              <div className="border-b border-dashed border-outline-variant w-full"></div>
+              <div className="border-b border-dashed border-outline-variant w-full"></div>
+            </div>
+
             {salesChartValues.map((val, idx) => {
               const maxVal = Math.max(...salesChartValues) || 1;
               const heightPct = (val / maxVal) * 100;
               return (
-                <div key={idx} className="h-full flex-grow flex flex-col justify-end items-center group relative">
+                <div key={idx} className="h-full flex-grow flex flex-col justify-end items-center group relative z-10">
                   {/* Tooltip on hover */}
-                  <span className="absolute -top-6 text-[9px] font-black bg-inverse-surface text-inverse-on-surface px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none z-10">
+                  <span className="absolute -top-6 text-[9px] font-black bg-inverse-surface text-inverse-on-surface px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none z-20">
                     ₹{val.toFixed(0)}
                   </span>
                   <div 
-                    className="w-full bg-primary/20 rounded-t-lg group-hover:bg-primary transition-all duration-300 shadow-inner"
-                    style={{ height: `${Math.max(heightPct, 5)}%` }}
+                    className="w-full rounded-t-lg transition-all duration-500 ease-out hover:scale-x-[1.03] hover:shadow-lg hover:shadow-primary/30 cursor-pointer shadow-inner"
+                    style={{ 
+                      height: `${Math.max(heightPct, 5)}%`,
+                      background: `linear-gradient(to top, var(--color-primary), var(--color-primary-container))`
+                    }}
                   ></div>
-                  <span className="text-[10px] text-on-surface-variant font-bold mt-2">{chartLabels[idx]}</span>
+                  <span className="text-[10px] text-on-surface-variant font-bold mt-2 select-none">{chartLabels[idx]}</span>
                 </div>
               );
             })}
@@ -746,8 +838,8 @@ export default function DashboardClient({
                 </h3>
                 <p className="text-xs text-on-surface-variant font-medium mt-1">
                   {modalType === 'revenue' 
-                    ? `Total Revenue: ₹${revenue.toFixed(2)} across ${completedOrders.length} completed orders`
-                    : `Showing all ${completedOrders.length} completed orders`
+                    ? `Filtered Revenue: ₹${modalFilteredRevenue.toFixed(2)} across ${filteredCompletedOrders.length} completed orders`
+                    : `Showing ${filteredCompletedOrders.length} completed orders`
                   }
                 </p>
               </div>
@@ -759,41 +851,74 @@ export default function DashboardClient({
               </button>
             </div>
 
-            {/* CSV Exports (only for revenue modal) */}
-            {modalType === 'revenue' && (
-              <div className="p-4 bg-primary/5 border-b border-outline-variant/20 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[11px] font-extrabold text-primary flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[16px]">download</span>
-                  <span>Export Revenue Sheet (CSV):</span>
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => downloadRevenueCSV('today')}
-                    className="px-2.5 py-1.5 bg-surface hover:bg-surface-container text-[10px] font-black rounded-lg border border-outline-variant/30 transition-colors cursor-pointer text-on-surface shadow-sm"
-                  >
-                    Today
-                  </button>
-                  <button
-                    onClick={() => downloadRevenueCSV('weekly')}
-                    className="px-2.5 py-1.5 bg-surface hover:bg-surface-container text-[10px] font-black rounded-lg border border-outline-variant/30 transition-colors cursor-pointer text-on-surface shadow-sm"
-                  >
-                    Weekly
-                  </button>
-                  <button
-                    onClick={() => downloadRevenueCSV('monthly')}
-                    className="px-2.5 py-1.5 bg-surface hover:bg-surface-container text-[10px] font-black rounded-lg border border-outline-variant/30 transition-colors cursor-pointer text-on-surface shadow-sm"
-                  >
-                    Monthly
-                  </button>
-                  <button
-                    onClick={() => downloadRevenueCSV('all')}
-                    className="px-2.5 py-1.5 bg-primary text-white hover:bg-primary-hover text-[10px] font-black rounded-lg transition-colors cursor-pointer shadow-sm"
-                  >
-                    All-Time
-                  </button>
+            {/* In-Modal Period Filters & Export Button */}
+            <div className="p-4 bg-surface-container-low border-b border-outline-variant/20 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px] text-on-surface-variant select-none">calendar_today</span>
+                    <span className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider select-none">Period:</span>
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {(['today', 'weekly', 'monthly', 'custom', 'all'] as const).map((period) => (
+                      <button
+                        key={period}
+                        onClick={() => setFilterPeriod(period)}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black border transition-all cursor-pointer shadow-sm ${
+                          filterPeriod === period
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-surface hover:bg-surface-container border-outline-variant/30 text-on-surface'
+                        }`}
+                      >
+                        {period === 'today' ? 'Today' : period === 'weekly' ? 'Weekly' : period === 'monthly' ? 'Monthly' : period === 'custom' ? 'Custom Range' : 'All-Time'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+                <button
+                  onClick={() => downloadRevenueCSV(filterPeriod)}
+                  className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[10px] font-black transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
+                >
+                  <span className="material-symbols-outlined text-[14px]">download</span>
+                  <span>Export CSV</span>
+                </button>
               </div>
-            )}
+
+              {/* Custom Date Picker Inputs */}
+              {filterPeriod === 'custom' && (
+                <div className="flex flex-wrap items-center gap-4 bg-surface p-3.5 rounded-2xl border border-outline-variant/20">
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">From:</label>
+                    <input
+                      type="date"
+                      value={customStartDate}
+                      onChange={(e) => setCustomStartDate(e.target.value)}
+                      className="bg-surface-container-low border border-outline-variant/30 rounded-lg text-[11px] font-bold px-2 py-1 outline-none text-on-surface focus:border-primary focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">To:</label>
+                    <input
+                      type="date"
+                      value={customEndDate}
+                      onChange={(e) => setCustomEndDate(e.target.value)}
+                      className="bg-surface-container-low border border-outline-variant/30 rounded-lg text-[11px] font-bold px-2 py-1 outline-none text-on-surface focus:border-primary focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                  {(customStartDate || customEndDate) && (
+                    <button
+                      onClick={() => {
+                        setCustomStartDate('');
+                        setCustomEndDate('');
+                      }}
+                      className="px-2.5 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface text-[10px] font-bold rounded-lg border border-outline-variant/30 cursor-pointer"
+                    >
+                      Clear Dates
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Search filter */}
             <div className="p-4 bg-surface-container-low/50 border-b border-outline-variant/20 flex gap-2">

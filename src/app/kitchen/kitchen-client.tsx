@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { playNotificationSound, unlockAudio } from '@/lib/sounds';
 
 interface MenuItem {
   name: string;
@@ -43,6 +44,27 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [mobileTab, setMobileTab] = useState<'new' | 'preparing' | 'ready'>('new');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [averageWait, setAverageWait] = useState<number>(12);
+  const [isEditingWait, setIsEditingWait] = useState(false);
+  const [waitInput, setWaitInput] = useState('12');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('kitchen-average-wait');
+    if (saved) {
+      setAverageWait(parseInt(saved, 10));
+      setWaitInput(saved);
+    }
+  }, []);
+
+  const handleSaveWait = () => {
+    const val = parseInt(waitInput, 10);
+    if (!isNaN(val) && val >= 0) {
+      setAverageWait(val);
+      localStorage.setItem('kitchen-average-wait', val.toString());
+    }
+    setIsEditingWait(false);
+  };
 
   // Sync active orders when coming to foreground or on manual sync
   const syncActiveOrders = async () => {
@@ -50,8 +72,10 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
       const res = await fetch('/api/orders?active=true');
       if (res.ok) {
         const data = await res.json();
+        // Kitchen only wants active orders that are not served or completed yet
+        const activeKitchenOrders = data.filter((o: any) => o.status !== 'SERVED' && o.status !== 'COMPLETED');
         // Kitchen wants oldest orders first (asc by createdAt)
-        const sorted = data.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        const sorted = activeKitchenOrders.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         setOrders(sorted);
       }
     } catch (err) {
@@ -59,20 +83,23 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
     }
   };
 
-  // Unlock audio on first user interaction, request notification permission, and set up live-event listener
+  const handleManualSync = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    await syncActiveOrders();
+    setToastMessage('Kitchen orders successfully synced.');
+    setIsSyncing(false);
+  };
+
+  // Unlock audio on first user interaction, request notification permission, and set up live-event listener + polling
   useEffect(() => {
-    let playSound: any = null;
-    import('@/lib/sounds').then((mod) => {
-      playSound = mod.playNotificationSound;
-      // Unlock audio context on any user click
-      const handleClick = () => { mod.unlockAudio(); };
-      document.addEventListener('click', handleClick, { once: false });
-      return () => document.removeEventListener('click', handleClick);
-    });
+    // Unlock audio context on any user click
+    const handleClick = () => { unlockAudio(); };
+    document.addEventListener('click', handleClick, { once: false });
 
     // Also unlock on first touch (mobile)
     const handleTouch = () => {
-      import('@/lib/sounds').then((mod) => mod.unlockAudio());
+      unlockAudio();
     };
     document.addEventListener('touchstart', handleTouch, { once: true });
 
@@ -115,11 +142,11 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
             }
           } else if (type === 'ORDER_STATUS_UPDATED') {
             // Play sound if order reverted back to pending (kitchen needs to know)
-            if (data.status === 'PENDING' && playSound) {
-              playSound('statusUpdate');
+            if (data.status === 'PENDING') {
+              playNotificationSound('statusUpdate');
             }
             setOrders((prev) => {
-              if (data.status === 'COMPLETED') {
+              if (data.status === 'COMPLETED' || data.status === 'SERVED') {
                 return prev.filter((o) => o.id !== data.id);
               }
               return prev.map((o) => (o.id === data.id ? data : o));
@@ -140,6 +167,11 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
 
     connectSSE();
 
+    // Start client polling fallback for Vercel/serverless environments
+    const pollInterval = setInterval(() => {
+      syncActiveOrders();
+    }, 5000); // sync every 5 seconds
+
     // Re-sync and reconnect when browser tab visibility changes (returns to foreground)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -152,7 +184,9 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
     return () => {
       if (eventSource) eventSource.close();
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('click', handleClick);
     };
   }, []);
 
@@ -161,20 +195,15 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
     const hasPendingOrders = orders.some(o => o.status === 'PENDING');
     if (!hasPendingOrders) return;
 
-    let playSound: any = null;
     let soundInterval: NodeJS.Timeout | null = null;
 
-    import('@/lib/sounds').then((mod) => {
-      playSound = mod.playNotificationSound;
-      
-      // Play immediately
-      playSound('newOrder');
-      
-      // Repeat every 4 seconds
-      soundInterval = setInterval(() => {
-        playSound('newOrder');
-      }, 4000);
-    });
+    // Play immediately
+    playNotificationSound('newOrder');
+    
+    // Repeat every 4 seconds
+    soundInterval = setInterval(() => {
+      playNotificationSound('newOrder');
+    }, 4000);
 
     return () => {
       if (soundInterval) clearInterval(soundInterval);
@@ -205,7 +234,7 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
       
       const updated = await res.json();
       setOrders((prev) => {
-        if (newStatus === 'COMPLETED') {
+        if (newStatus === 'COMPLETED' || newStatus === 'SERVED') {
           return prev.filter((o) => o.id !== orderId);
         }
         return prev.map((o) => (o.id === orderId ? updated : o));
@@ -232,7 +261,7 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
   // Columns segmentation
   const newOrders = orders.filter((o) => o.status === 'PENDING');
   const preparingOrders = orders.filter((o) => o.status === 'ACCEPTED' || o.status === 'PREPARING');
-  const readyOrders = orders.filter((o) => o.status === 'READY' || o.status === 'SERVED');
+  const readyOrders = orders.filter((o) => o.status === 'READY');
 
   // Reusable Order Card component
   const renderOrderCard = (order: Order, column: 'new' | 'preparing' | 'ready') => (
@@ -333,11 +362,11 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
             Re-prep
           </button>
           <button
-            onClick={() => handleUpdateStatus(order.id, 'COMPLETED')}
+            onClick={() => handleUpdateStatus(order.id, 'SERVED')}
             className="flex-[2] h-9 bg-neutral-100 text-neutral-950 rounded-xl text-xs font-extrabold hover:bg-neutral-200 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1"
           >
             <span className="material-symbols-outlined text-[16px] font-bold">done_all</span>
-            <span>Complete Order</span>
+            <span>Serve Order</span>
           </button>
         </div>
       )}
@@ -469,17 +498,40 @@ export default function KitchenClient({ initialOrders, user }: KitchenClientProp
           </div>
           <div className="flex gap-2 md:gap-3 shrink-0">
             <button
-              onClick={() => router.refresh()}
-              className="bg-neutral-800 hover:bg-neutral-700 text-white px-3 md:px-4 py-2 md:py-2.5 rounded-xl flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-bold transition-all border border-neutral-700/50 cursor-pointer"
+              onClick={handleManualSync}
+              disabled={isSyncing}
+              className={`bg-neutral-800 hover:bg-neutral-700 text-white px-3 md:px-4 py-2 md:py-2.5 rounded-xl flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-bold transition-all border border-neutral-700/50 cursor-pointer ${isSyncing ? 'opacity-65 cursor-not-allowed' : ''}`}
             >
-              <span className="material-symbols-outlined text-[16px] md:text-[18px]">refresh</span>
+              <span className={`material-symbols-outlined text-[16px] md:text-[18px] ${isSyncing ? 'animate-spin' : ''}`}>refresh</span>
               <span className="hidden sm:inline">Sync</span>
             </button>
-            <div className="bg-primary-container text-on-primary-container px-3 md:px-4 py-2 md:py-2.5 rounded-xl font-extrabold text-[10px] md:text-xs flex items-center gap-1.5 md:gap-2 shadow-lg">
-              <span className="material-symbols-outlined text-[16px] md:text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
-              <span className="hidden sm:inline">Average Wait: 12m</span>
-              <span className="sm:hidden">12m</span>
-            </div>
+            {isEditingWait ? (
+              <div className="bg-primary-container text-on-primary-container px-3 md:px-4 py-1.5 md:py-2 rounded-xl font-extrabold text-[10px] md:text-xs flex items-center gap-1.5 shadow-lg border border-primary/20">
+                <input
+                  type="number"
+                  value={waitInput}
+                  onChange={(e) => setWaitInput(e.target.value)}
+                  onBlur={handleSaveWait}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveWait();
+                  }}
+                  className="w-12 bg-white text-black text-center rounded px-1.5 py-0.5 outline-none text-xs font-black"
+                  autoFocus
+                  min="0"
+                />
+                <span className="text-[10px] uppercase font-black">mins</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsEditingWait(true)}
+                className="bg-primary-container text-on-primary-container hover:bg-opacity-95 px-3 md:px-4 py-2 md:py-2.5 rounded-xl font-extrabold text-[10px] md:text-xs flex items-center gap-1.5 md:gap-2 shadow-lg cursor-pointer transition-all border border-transparent"
+                title="Click to edit average wait time"
+              >
+                <span className="material-symbols-outlined text-[16px] md:text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
+                <span className="hidden sm:inline">Average Wait: {averageWait}m</span>
+                <span className="sm:hidden">{averageWait}m</span>
+              </button>
+            )}
           </div>
         </header>
 

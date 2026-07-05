@@ -72,10 +72,10 @@ export async function POST(req: Request) {
         }
       });
 
-      // 2. Mark table status as OCCUPIED
+      // 2. Mark table status as PREPARING
       await tx.table.update({
         where: { id: tableId },
-        data: { status: 'OCCUPIED' }
+        data: { status: 'PREPARING' }
       });
 
       return order;

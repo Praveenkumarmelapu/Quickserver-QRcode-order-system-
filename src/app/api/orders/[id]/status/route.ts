@@ -55,6 +55,14 @@ export async function PATCH(
         });
       }
 
+      // If status is READY or SERVED, make the table OCCUPIED (Eating)
+      if (status === 'READY' || status === 'SERVED') {
+        await tx.table.update({
+          where: { id: order.tableId },
+          data: { status: 'OCCUPIED' }
+        });
+      }
+
       return order;
     });
 

@@ -7,7 +7,12 @@ export default async function Home() {
   // Fetch all available tables from the database to populate the mock QR simulator
   const tables = await prisma.table.findMany({
     orderBy: { tableNumber: 'asc' },
-  });
+  }).catch(() => []);
+
+  const firstTable = tables.find(t => t.tableNumber === 1) || tables[0];
+  const exploreMenuUrl = firstTable 
+    ? `/menu?table=${firstTable.tableNumber}&token=${firstTable.qrToken}`
+    : `/menu?table=1&token=t1-secure-token-93f21`;
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden font-sans flex flex-col justify-between">
@@ -31,6 +36,28 @@ export default async function Home() {
             A premium contactless, QR-based digital menu and kitchen order management system.
           </p>
         </header>
+
+        {/* Seeding Warning Alert */}
+        {tables.length === 0 && (
+          <div className="w-full max-w-xl bg-amber-500/10 border border-amber-500/35 p-6 rounded-3xl text-center space-y-4 shadow-sm">
+            <div className="w-12 h-12 bg-amber-500/20 text-amber-700 rounded-full flex items-center justify-center mx-auto">
+              <span className="material-symbols-outlined text-[28px]">warning</span>
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-sm font-black text-on-surface uppercase tracking-wider">Database is Not Seeded!</h2>
+              <p className="text-xs text-on-surface-variant max-w-md mx-auto leading-relaxed">
+                Before you can scan simulated QR codes or view staff dashboards, the restaurant tables, staff roles, and menus need to be seeded into your Postgres database.
+              </p>
+            </div>
+            <a
+              href="/api/admin/seed"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white hover:bg-opacity-95 rounded-xl text-xs font-black transition-all shadow-sm active:scale-95 cursor-pointer decoration-none"
+            >
+              <span className="material-symbols-outlined text-[16px]">database</span>
+              <span>1-Click Seed Demo Data</span>
+            </a>
+          </div>
+        )}
 
         {/* Portals Split Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 w-full">
@@ -108,7 +135,7 @@ export default async function Home() {
 
             {/* General Menu Preview Card */}
             <Link
-              href="/menu?table=1&token=t1-secure-token-93f21"
+              href={exploreMenuUrl}
               className="p-6 bg-surface-container-lowest border border-outline-variant/20 rounded-3xl transition-all hover:bg-surface-container-low flex items-center justify-between group cursor-pointer"
             >
               <div className="flex items-center gap-3">
@@ -119,6 +146,18 @@ export default async function Home() {
                 arrow_forward
               </span>
             </Link>
+
+            {/* Staff Credentials Info Box */}
+            <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-3xl p-5 space-y-2.5 text-xs text-on-surface-variant leading-relaxed">
+              <div className="flex items-center gap-1.5 text-on-surface font-bold">
+                <span className="material-symbols-outlined text-[16px] text-primary">key</span>
+                <span>Demo Staff Credentials</span>
+              </div>
+              <div className="space-y-1">
+                <p><strong>Admin:</strong> admin@luxedine.com / <code className="bg-surface-container px-1.5 py-0.5 rounded font-mono font-bold text-[10px]">admin123</code></p>
+                <p><strong>Kitchen:</strong> kitchen@luxedine.com / <code className="bg-surface-container px-1.5 py-0.5 rounded font-mono font-bold text-[10px]">kitchen123</code></p>
+              </div>
+            </div>
           </section>
         </div>
       </main>

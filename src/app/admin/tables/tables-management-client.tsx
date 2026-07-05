@@ -99,6 +99,26 @@ export default function TablesManagementClient({
     }
   }, [toastMessage]);
 
+  // Auto-update polling loop for real-time table statuses (occupied/billing/dirty/free)
+  useEffect(() => {
+    const syncTablesData = async () => {
+      try {
+        const res = await fetch('/api/admin/tables');
+        if (res.ok) {
+          const data = await res.json();
+          // Sort tables by tableNumber ascending
+          const sorted = data.sort((a: Table, b: Table) => a.tableNumber - b.tableNumber);
+          setTables(sorted);
+        }
+      } catch (err) {
+        console.error('Error auto-updating tables:', err);
+      }
+    };
+
+    const interval = setInterval(syncTablesData, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const handleOpenAddModal = () => {
     setFormNumber('');
     setFormCapacity('4');
@@ -262,6 +282,7 @@ export default function TablesManagementClient({
   const getStatusColorClass = (status: string) => {
     switch (status) {
       case 'AVAILABLE': return 'text-secondary';
+      case 'PREPARING': return 'text-amber-500';
       case 'OCCUPIED': return 'text-primary';
       case 'BILLING': return 'text-tertiary';
       case 'DIRTY': return 'text-error';
@@ -272,6 +293,7 @@ export default function TablesManagementClient({
   const getStatusDropdownStyle = (status: string) => {
     switch (status) {
       case 'AVAILABLE': return 'bg-secondary-container/10 text-secondary border-secondary-container/30';
+      case 'PREPARING': return 'bg-amber-100/30 text-amber-600 border-amber-500/30';
       case 'OCCUPIED': return 'bg-primary-container/10 text-primary border-primary-container/30';
       case 'BILLING': return 'bg-tertiary-container/10 text-tertiary border-tertiary-container/30';
       case 'DIRTY': return 'bg-error-container/10 text-error border-error-container/30';
@@ -343,7 +365,7 @@ export default function TablesManagementClient({
 
   const totalTables = tables.length;
   const availableCount = tables.filter((t) => t.status === 'AVAILABLE').length;
-  const occupiedCount = tables.filter((t) => t.status === 'OCCUPIED' || t.status === 'BILLING').length;
+  const occupiedCount = tables.filter((t) => t.status === 'OCCUPIED' || t.status === 'BILLING' || t.status === 'PREPARING').length;
   const simulatedScans = totalTables * 6 + 12; // Realistic simulation
 
   return (
@@ -477,6 +499,7 @@ export default function TablesManagementClient({
                   className={`h-9 border text-xs font-bold rounded-xl px-3 outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-all ${getStatusDropdownStyle(table.status)}`}
                 >
                   <option value="AVAILABLE">AVAILABLE (Free)</option>
+                  <option value="PREPARING">PREPARING (Order Prep)</option>
                   <option value="OCCUPIED">OCCUPIED (Eating)</option>
                   <option value="BILLING">BILLING (Awaiting pay)</option>
                   <option value="DIRTY">DIRTY (Needs clean)</option>

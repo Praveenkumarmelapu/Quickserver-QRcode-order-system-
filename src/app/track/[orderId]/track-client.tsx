@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOrderStore } from '@/lib/store';
+import { playNotificationSound, unlockAudio } from '@/lib/sounds';
 
 interface MenuItem {
   id: string;
@@ -41,6 +42,48 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
   const [order, setOrder] = useState<Order>(initialOrder);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const tableSession = useOrderStore((state) => state.tableSession);
+  const [selectedOrderId, setSelectedOrderId] = useState<string>(initialOrder.id);
+  const [sessionOrders, setSessionOrders] = useState<Order[]>([]);
+
+  // Fetch all orders for this table session
+  useEffect(() => {
+    const fetchSessionOrders = async () => {
+      const tableId = tableSession?.id || order.tableId;
+      if (!tableId) return;
+      try {
+        const res = await fetch(`/api/orders?tableId=${tableId}`);
+        if (res.ok) {
+          const data = await res.json();
+          // Filter to show orders from this table session (placed in the last 6 hours)
+          const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
+          const recentOrders = data.filter((o: any) => new Date(o.createdAt) >= sixHoursAgo);
+          setSessionOrders(recentOrders);
+        }
+      } catch (err) {
+        console.error('Failed to fetch session orders:', err);
+      }
+    };
+    fetchSessionOrders();
+    const interval = setInterval(fetchSessionOrders, 6000); // refresh list of session orders every 6 seconds
+    return () => clearInterval(interval);
+  }, [tableSession?.id, order.tableId]);
+
+  // Fetch order details when selected order changes
+  useEffect(() => {
+    if (selectedOrderId === order.id) return;
+    const fetchSelectedOrder = async () => {
+      try {
+        const res = await fetch(`/api/orders/${selectedOrderId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setOrder(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch selected order:', err);
+      }
+    };
+    fetchSelectedOrder();
+  }, [selectedOrderId, order.id]);
 
   const handleCallWaiter = async () => {
     const tableId = tableSession?.id || order.tableId;
@@ -69,21 +112,21 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
     }
   };
 
-  // Connect to SSE for real-time order status updates
+  const orderStatusRef = useRef<string>(order.status);
+  useEffect(() => {
+    orderStatusRef.current = order.status;
+  }, [order.status]);
+
+  // Connect to SSE and polling fallback for real-time order status updates
   useEffect(() => {
     let eventSource: EventSource | null = null;
     let pollInterval: NodeJS.Timeout | null = null;
 
-    // Dynamic import for notification sounds + unlock on interaction
-    let playSound: any = null;
-    import('@/lib/sounds').then((mod) => {
-      playSound = mod.playNotificationSound;
-      const handleClick = () => { mod.unlockAudio(); };
-      document.addEventListener('click', handleClick, { once: false });
-    });
+    const handleClick = () => { unlockAudio(); };
+    document.addEventListener('click', handleClick, { once: false });
 
     const handleTouch = () => {
-      import('@/lib/sounds').then((mod) => mod.unlockAudio());
+      unlockAudio();
     };
     document.addEventListener('touchstart', handleTouch, { once: true });
 
@@ -96,18 +139,18 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
             const parsed = JSON.parse(event.data);
             if (
               (parsed.type === 'ORDER_STATUS_UPDATED' || parsed.type === 'NEW_ORDER') &&
-              parsed.data?.id === order.id
+              parsed.data?.id === selectedOrderId
             ) {
-              setOrder(parsed.data);
-              // Play notification sound for status changes
-              if (playSound) {
+              if (parsed.data.status !== orderStatusRef.current) {
+                setOrder(parsed.data);
+                // Play notification sound for status changes
                 if (parsed.data.status === 'READY' || parsed.data.status === 'SERVED') {
-                  playSound('orderComplete');
+                  playNotificationSound('orderComplete');
                 } else {
-                  playSound('statusUpdate');
+                  playNotificationSound('statusUpdate');
                 }
+                setToastMessage(`Order status updated to: ${parsed.data.status}`);
               }
-              setToastMessage(`Order status updated to: ${parsed.data.status}`);
             }
           } catch (err) {
             console.error('Error parsing SSE event data:', err);
@@ -117,41 +160,44 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
         eventSource.onerror = (err) => {
           console.warn('SSE connection error. Retrying...', err);
           eventSource?.close();
-          // Fall back to polling if SSE fails
-          if (!pollInterval) {
-            startPolling();
-          }
         };
       } catch (err) {
         console.error('SSE setup error:', err);
-        startPolling();
       }
     };
 
     const startPolling = () => {
       pollInterval = setInterval(async () => {
         try {
-          const res = await fetch(`/api/orders/${order.id}`);
+          const res = await fetch(`/api/orders/${selectedOrderId}`);
           if (res.ok) {
             const data = await res.json();
-            if (data.status !== order.status) {
+            if (data.status !== orderStatusRef.current) {
               setOrder(data);
+              // Play notification sound for status changes
+              if (data.status === 'READY' || data.status === 'SERVED') {
+                playNotificationSound('orderComplete');
+              } else {
+                playNotificationSound('statusUpdate');
+              }
               setToastMessage(`Order status updated to: ${data.status}`);
             }
           }
         } catch (err) {
           console.error('Polling error:', err);
         }
-      }, 10000); // Poll every 10 seconds
+      }, 6000); // Poll every 6 seconds
     };
 
     setupSSE();
+    startPolling(); // Run polling by default as fallback for serverless hosting
 
     return () => {
       if (eventSource) eventSource.close();
       if (pollInterval) clearInterval(pollInterval);
+      document.removeEventListener('click', handleClick);
     };
-  }, [order.id, order.status]);
+  }, [selectedOrderId]);
 
   // Toast timer
   useEffect(() => {
@@ -313,8 +359,46 @@ export default function TrackClient({ initialOrder }: { initialOrder: any }) {
           </button>
         </div>
 
-        {/* Right Column - Order Items summary */}
-        <div className="w-full md:w-80 space-y-3 flex-shrink-0 md:sticky md:top-24">
+        {/* Right Column - Order Items summary & Session Orders list */}
+        <div className="w-full md:w-80 space-y-5 flex-shrink-0 md:sticky md:top-24">
+          {sessionOrders.length > 1 && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-bold text-on-surface uppercase tracking-wider px-1">Your Orders (Select to track)</h3>
+              <div className="flex flex-col gap-2">
+                {sessionOrders.map((o) => {
+                  const isSelected = o.id === selectedOrderId;
+                  return (
+                    <button
+                      key={o.id}
+                      onClick={() => setSelectedOrderId(o.id)}
+                      className={`w-full text-left p-3.5 rounded-2xl border text-xs flex flex-col gap-1.5 transition-all active:scale-[0.98] cursor-pointer shadow-sm ${
+                        isSelected
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-outline-variant/30 bg-surface-container-lowest text-on-surface hover:bg-surface-container-low'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center w-full">
+                        <span className="font-extrabold text-[12px]">#LD-{o.id.slice(-6).toUpperCase()}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                          o.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
+                          o.status === 'ACCEPTED' ? 'bg-blue-100 text-blue-800' :
+                          o.status === 'PREPARING' ? 'bg-orange-100 text-orange-800' :
+                          o.status === 'READY' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {o.status}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[10px] text-on-surface-variant font-medium">
+                        <span>{new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="font-extrabold text-primary">₹{o.total.toFixed(2)}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <h3 className="text-sm font-bold text-on-surface uppercase tracking-wider px-1">Order Details</h3>
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/35 overflow-hidden shadow-sm">
             <div className="divide-y divide-outline-variant/20">
