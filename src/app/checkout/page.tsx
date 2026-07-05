@@ -141,17 +141,8 @@ export default function CheckoutPage() {
       }
 
       const createdOrder = await response.json();
-      
-      // If payment is online, we'd normally redirect to a gateway here.
-      // Since it's a demonstration, we will directly process it as pending/authorized.
-      
-      setShowSuccessToast(true);
-      setActiveOrderId(createdOrder.id);
-      
-      setTimeout(() => {
-        clearCart();
-        router.push(`/track/${createdOrder.id}`);
-      }, 1500);
+      clearCart();
+      router.push(`/track/${createdOrder.id}`);
 
     } catch (err: any) {
       console.error(err);

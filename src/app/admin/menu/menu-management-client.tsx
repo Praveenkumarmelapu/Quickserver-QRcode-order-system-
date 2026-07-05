@@ -79,6 +79,38 @@ export default function MenuManagementClient({
     }
   };
 
+  const handleDeleteCategoryClick = async () => {
+    if (!formCategoryId) {
+      alert("No category selected.");
+      return;
+    }
+    const catToDelete = categories.find(c => c.id === formCategoryId);
+    if (!catToDelete) return;
+
+    const confirmed = confirm(
+      `⚠️ WARNING: Are you sure you want to delete the category "${catToDelete.name}"?\n\nDeleting this category will permanently delete ALL menu items belonging to it! This action cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/categories?id=${formCategoryId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to delete category');
+      }
+
+      setCategories((prev) => prev.filter((c) => c.id !== formCategoryId));
+      setToastMessage(`Category "${catToDelete.name}" and its menu items deleted successfully.`);
+      router.refresh();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Failed to delete category.');
+    }
+  };
+
   // Sync category select default
   useEffect(() => {
     if (categories.length > 0) {
@@ -538,14 +570,26 @@ export default function MenuManagementClient({
               <div className="space-y-1">
                 <div className="flex justify-between items-center px-1">
                   <label className="text-[10px] uppercase tracking-wider">Category</label>
-                  <button
-                    type="button"
-                    onClick={handleCreateCategoryPrompt}
-                    className="text-[10px] text-primary hover:underline font-bold flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none"
-                  >
-                    <span className="material-symbols-outlined text-[12px] font-bold">add</span>
-                    <span>Create Category</span>
-                  </button>
+                  <div className="flex gap-2.5">
+                    <button
+                      type="button"
+                      onClick={handleCreateCategoryPrompt}
+                      className="text-[10px] text-primary hover:underline font-bold flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none"
+                    >
+                      <span className="material-symbols-outlined text-[12px] font-bold">add</span>
+                      <span>Create</span>
+                    </button>
+                    {categories.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleDeleteCategoryClick}
+                        className="text-[10px] text-error hover:underline font-bold flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none"
+                      >
+                        <span className="material-symbols-outlined text-[12px] font-bold">delete</span>
+                        <span>Delete</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <select
                   value={formCategoryId}

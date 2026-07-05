@@ -51,3 +51,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Failed to create category' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'Category ID is required' }, { status: 400 });
+    }
+
+    await prisma.category.delete({
+      where: { id }
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('API delete category error:', error);
+    return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
+  }
+}
