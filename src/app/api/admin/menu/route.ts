@@ -23,6 +23,7 @@ export async function GET() {
 
   try {
     const menuItems = await prisma.menuItem.findMany({
+      where: { deleted: false },
       include: { category: true },
       orderBy: { name: 'asc' },
     });

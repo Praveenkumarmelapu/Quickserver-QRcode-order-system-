@@ -225,7 +225,7 @@ export default function MenuClient({ initialCategories, specialItem, verifiedTab
   const filteredCategories = getFilteredMenu();
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen pb-32 print:bg-white print:text-black print:p-0 print:pb-0">
+    <div className="bg-surface text-on-surface min-h-screen pb-56 print:bg-white print:text-black print:p-0 print:pb-0">
       {/* TopAppBar */}
       <header className="fixed top-0 left-0 right-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-sm h-16 flex justify-between items-center px-4 max-w-md md:max-w-5xl mx-auto border-b border-outline-variant/10 print:hidden">
         <div className="flex items-center gap-2">

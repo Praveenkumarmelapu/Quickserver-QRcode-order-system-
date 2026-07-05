@@ -66,9 +66,23 @@ export async function DELETE(
       return NextResponse.json({ error: 'Menu item not found' }, { status: 404 });
     }
 
-    await prisma.menuItem.delete({
-      where: { id }
+    // Check if the item is referenced in any orders
+    const orderCount = await prisma.orderItem.count({
+      where: { menuItemId: id }
     });
+
+    if (orderCount > 0) {
+      // Soft-delete: update deleted flag to true and available to false
+      await prisma.menuItem.update({
+        where: { id },
+        data: { deleted: true, available: false }
+      });
+    } else {
+      // Hard-delete: delete from database
+      await prisma.menuItem.delete({
+        where: { id }
+      });
+    }
 
     return NextResponse.json({ success: true, message: 'Menu item deleted' });
   } catch (error) {

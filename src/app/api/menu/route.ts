@@ -9,6 +9,7 @@ export async function GET() {
     const menu = await prisma.category.findMany({
       include: {
         items: {
+          where: { deleted: false },
           orderBy: {
             name: 'asc'
           }

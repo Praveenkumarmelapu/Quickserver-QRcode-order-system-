@@ -9,6 +9,7 @@ export default async function AdminMenuPage() {
       orderBy: { name: 'asc' },
     }),
     prisma.menuItem.findMany({
+      where: { deleted: false },
       include: { category: true },
       orderBy: { name: 'asc' },
     }),
